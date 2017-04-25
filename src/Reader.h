@@ -9,19 +9,25 @@
  *  - Determine number of 'Thread' classes to create (based on criteria)
  *  - Feed each SNP line to a 'Thread' class for processing
 **/
+#include "Monitor.h"
 
 class Reader {
     public:
-        // Constructor & Destructor
-        Reader();
+
+        /* Constructor and destructor */
+        Reader(char * filename);
         ~Reader();
 
-        // Prepare reader, given an input file
-        void prepare(char * filename, Monitor monitor);
+        /* Prepares the monitor that will be used for parsing */
+        void setMonitor(Monitor mon);
 
-        // Parses the input file
+        /* Set the parameters for parsing */
+        void setParameters(int alleleFreq, int confScore);
+  
+        /* Parses the input vcf file */
         void parse();
 
     private:
-        Monitor monitor;    // Reference to monitor that controls parsing threads
+        Monitor monitor;    /* Reference to monitor that controls parsing threads */
+
 }

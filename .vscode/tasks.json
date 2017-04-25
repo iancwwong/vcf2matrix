@@ -6,6 +6,6 @@
     "isShellCommand": true,
     "args": ["-g", 
                 "src/*.cpp",
-                "-o", "vcf-plot"],
+                "-o", "vcf2matrix"],
     "showOutput": "always"
 }
