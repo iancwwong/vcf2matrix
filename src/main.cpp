@@ -40,8 +40,9 @@ int main(int argc, char * argv[]) {
     reader.setMonitor(monitor);
     reader.setParseParameters(alleleFreq, confScore);
 
-    // Parse VCF into a matrix text file
-    reader.parse();
+    // Parse VCF appropriately
+    reader.parseSamplesNames();
+    reader.parseSNPs();
 
     return 0;
 }
