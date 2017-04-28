@@ -4,7 +4,7 @@
     "version": "0.1.0",
     "command": "g++",
     "isShellCommand": true,
-    "args": ["-g", 
+    "args": ["-g", "-std=c++11",
                 "src/*.cpp",
                 "-o", "vcf2matrix"],
     "showOutput": "always"

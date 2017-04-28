@@ -7,22 +7,34 @@
  * a specified external file.
 **/
 
+#ifndef WRITER_H
+#define WRITER_H
+
+#include <fstream>
+#include <string>
+
+#include "ParsedSNP.h"
+
+using namespace std;
+
 class Writer {
 
     public:
 
         /* Constructor and destructor */
-        Writer(char * outputFileName);
+        Writer();
         ~Writer();
 
-        /* Write a VCF parsed line (ie matrix line) and record SNP location */
-        writeParsedSNPLine(char * snpLoc, char * parsedLine);
+        /* Set the appropriate names for output */
+        void setOutputFilenames(string filename);
 
-        /* Write the samples' names */
-        writeSamplesNames(int numSamples, char * namesArray[]);
+        /* Write a VCF parsed line (ie matrix line) and record SNP location */
+        void writeParsedSNPLine(ParsedSNP pSNP);
 
     private:
         ofstream outputMatrixFile;          /* Reference to output matrix file */
         ofstream outputLocFile;             /* Reference to output locations file */
         ofstream outputSamplesNamesFile;    /* Reference to sample names */
-}
+};
+
+#endif

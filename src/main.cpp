@@ -19,7 +19,7 @@ int main(int argc, char * argv[]) {
     }
 
     // Validate and parse arguments
-    string filename = str(argv[0]);
+    string filename = string(argv[0]);
     int alleleFreq = stoi(argv[1], nullptr);
     int confScore = stoi(argv[2], nullptr);
 
@@ -29,19 +29,20 @@ int main(int argc, char * argv[]) {
 
     // Prepare writer
     string outputFilename = filename.substr(0, filename.find_last_of(".")); // remove file extension component
-    Writer writer(outputFilename);
+    Writer writer();
+    writer.setOutputFilenames(outputFilename);
 
     // Prepare monitor for concurrency parsing
     Monitor monitor;
     monitor.setWriter(writer);
+    monitor.setParseParameters(alleleFreq, confScore);
 
     // Set up reader
-    Reader reader(filename);
+    Reader reader();
+    reader.setInputFile(filename);
     reader.setMonitor(monitor);
-    reader.setParseParameters(alleleFreq, confScore);
 
     // Parse VCF appropriately
-    reader.parseSamplesNames();
     reader.parseSNPs();
 
     return 0;

@@ -10,7 +10,13 @@
  *  - Determine number of 'Thread' classes to create (based on criteria)
  *  - Feed each SNP line to a 'Thread' class for processing
 **/
+
+#ifndef READER_H
+#define READER_H
+
 #include <fstream>
+#include <string>
+
 #include "Monitor.h"
 
 using namespace std;
@@ -19,17 +25,14 @@ class Reader {
     public:
 
         /* Constructor and destructor */
-        Reader(char * filename);
+        Reader();
         ~Reader();
+
+        /* Set up the input file */
+        void setInputfile(string inputFilename);
 
         /* Prepares the monitor that will be used for parsing */
         void setMonitor(Monitor mon);
-
-        /* Set the parameters for parsing */
-        void setParameters(int alleleFreq, int confScore);
-
-        /* Extract samples' names (writes directly using assigned writer) */
-        void parseSamplesNames();
   
         /* Parses the SNPs in the vcf file */
         void parseSNPs();
@@ -39,4 +42,6 @@ class Reader {
         fstream inputVCFFile;   /* Reference to input VCF file */
         int numThreads;         /* Number of threads that should be run, 
                                 based on the properties of the input VCF file */
-}
+};
+
+#endif
