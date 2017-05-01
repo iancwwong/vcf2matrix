@@ -40,7 +40,7 @@ int main(int argc, char * argv[]) {
 
     /* Prepare monitor for parsing */
     int numThreads = 1;
-    monitor.setNumThreads(numThreads)
+    monitor.setNumThreads(numThreads);
     monitor.setWriter(&writer);
     monitor.setParseParameters(alleleFreq, confScore);
 

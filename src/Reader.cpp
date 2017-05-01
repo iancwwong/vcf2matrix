@@ -36,17 +36,22 @@ void Reader::executeParse() {
 	/* Check file opened properly */
 	if (!inputVCFFile.is_open()) {
 		cout << "Unable to open file." << endl;
-		return 0;
+		return;
 	}
 
 	/* For now, read file in LINES - an optimisation would be
 	   to read in a certain number of bytes */
-	while ( getline (inputVCFFile,line) ) {
+	while ( getline(inputVCFFile,line) ) {
 
-		/* Seek until AFTER the VCF header */
-		if ()
-		cout << line << '\n';
+		/* Ignore all lines that start with '##' - most likely header info */
+		if (line.compare(0,2,"##") == 0) {
+			continue;
+		}
+
+		/* Pass the line as data to Monitor for processing */
+		this->monitor->addToParseData(line);
 	}
-	myfile.close();
+
+	inputVCFFile.close();
 
 }

@@ -48,6 +48,9 @@ class Monitor {
         void setParseParameters(int alleleFreq, int confScore);
 		void setNumThreads(int numThreads);
 
+		/* Add data to the toParse */
+		void addToParseData(string data);
+
         /* Thread that runs the parsing */
         void executeParse();
 

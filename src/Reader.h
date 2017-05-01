@@ -17,7 +17,8 @@
 
 #include <fstream>
 #include <string>
-#include <iostream>
+#include <iostream> /* Print error messages */
+#include <mutex>    /* Acquiring lock to 'toParse' in monitor */ 
 
 #include "Monitor.h"
 
@@ -45,7 +46,7 @@ class Reader {
     private:
         Monitor * monitor;      /* Reference to monitor that controls parsing threads */
         string inputFilename;   /* Reference to input VCF file name */
-        int numThreads;         /* Number of threads that should be run, 
+        int numLines;         /* Number of threads that should be run, 
                                 based on the properties of the input VCF file */
 };
 

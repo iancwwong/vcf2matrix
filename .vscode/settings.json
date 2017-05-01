@@ -3,6 +3,7 @@
 		"*.tcc": "cpp",
 		"iosfwd": "cpp",
 		"mutex": "cpp",
-		"iostream": "cpp"
+		"iostream": "cpp",
+		"fstream": "cpp"
 	}
 }
