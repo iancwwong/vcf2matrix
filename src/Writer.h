@@ -16,7 +16,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
-//#include <mutex>
+#include <mutex>
 
 #include "ParsedSNP.h"
 

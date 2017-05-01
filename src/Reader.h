@@ -17,6 +17,7 @@
 
 #include <fstream>
 #include <string>
+#include <iostream>
 
 #include "Monitor.h"
 
@@ -30,17 +31,20 @@ class Reader {
         ~Reader();
 
         /* Set up the input file */
-        void setInputFile(string inputFilename);
+        void setInputFile(string inputFilenameStr);
 
         /* Prepares the monitor that will be used for parsing */
         void setMonitor(Monitor * mon);
+
+        /* Returns number of SNP lines */
+        int getNumLines();
   
         /* Parses the SNPs in the vcf file */
         void executeParse();
 
     private:
-        Monitor * monitor;        /* Reference to monitor that controls parsing threads */
-        fstream inputVCFFile;   /* Reference to input VCF file */
+        Monitor * monitor;      /* Reference to monitor that controls parsing threads */
+        string inputFilename;   /* Reference to input VCF file name */
         int numThreads;         /* Number of threads that should be run, 
                                 based on the properties of the input VCF file */
 };

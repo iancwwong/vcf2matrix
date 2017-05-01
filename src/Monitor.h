@@ -46,6 +46,7 @@ class Monitor {
 		/* Preparation functions */
 		void setWriter(Writer * writer);
         void setParseParameters(int alleleFreq, int confScore);
+		void setNumThreads(int numThreads);
 
         /* Thread that runs the parsing */
         void executeParse();
@@ -61,10 +62,11 @@ class Monitor {
 		mutex busyThreadsCount_lock;	
 
     private:
-		Writer * writer;									/* Reference to Writer. Needs to access (and the corr lock):
+		Writer * writer;								/* Reference to Writer. Needs to access (and the corr lock):
 																- toWrite vector */
  
-		vector<thread> conversionThreads;				/* The list of executing conversion threads that parse/process information */
+		int numThreads;									/* Number of threads to manage */
+		vector<thread *> conversionThreads;				/* The list of executing conversion threads that parse/process information */
 
 		bool prevProcComplete;							/* Tracks whether previous process is completed */
 

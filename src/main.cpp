@@ -39,6 +39,8 @@ int main(int argc, char * argv[]) {
     reader.setMonitor(&monitor);
 
     /* Prepare monitor for parsing */
+    int numThreads = 1;
+    monitor.setNumThreads(numThreads)
     monitor.setWriter(&writer);
     monitor.setParseParameters(alleleFreq, confScore);
 
