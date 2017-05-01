@@ -7,7 +7,8 @@
 #include <thread>
 
 #include "Reader.h"
-#include "Monitor.h"
+#include "SNPParser.h"
+#include "ParsedSNP.h"
 #include "Writer.h"
 
 using namespace std;
@@ -29,42 +30,19 @@ int main(int argc, char * argv[]) {
     cout << "Allele freq: " << alleleFreq << endl;
     cout << "Confidence Score: " << confScore << endl;
 
-    /* Create the classes */
+    /* Read the VCF file */
     Reader reader;
-    Monitor monitor;
+    reader.readToParse(filename);
+    vector<string> * toParse = reader.getToParseVector();
+
+    /* Parse the data */
+    SNPParser parser;
+    parser.parserSNP(toParse);
+    vector<ParsedSNP> * toWrite = parser.getToWriteVector();
+
+    /* Write the data */
     Writer writer;
-
-    /* Set up reader */
-    reader.setInputFile(filename);
-    reader.setMonitor(&monitor);
-
-    /* Prepare monitor for parsing */
-    int numThreads = 1;
-    monitor.setNumThreads(numThreads);
-    monitor.setWriter(&writer);
-    monitor.setParseParameters(alleleFreq, confScore);
-
-    /* Prepare writer */
-    string outputFilename = filename.substr(0, filename.find_last_of(".")); /* remove file extension component */
-    writer.setOutputFilenames(outputFilename);
-
-    /* Parse VCF appropriately */
-    thread readerThread(&Reader::executeParse, &reader);
-    thread monitorThread(&Monitor::executeParse, &monitor);
-    thread writerThread(&Writer::executeParse, &writer);
-
-    /* Block main thread until reader thread finishes */
-    readerThread.join();
-
-    /* Signal monitor that the reader process has finished 
-        Then block until monitor thread finishes */
-    monitor.signalPrevProcComplete();
-    monitorThread.join();
-
-    /* Signal writer that the monitor process has finished.
-        Then block until writer process finishes */
-    writer.signalPrevProcComplete();
-    writerThread.join();
+    writer.writeParsedSNP(toWrite, filename);
 
     return 0;
 }

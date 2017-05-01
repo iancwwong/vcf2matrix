@@ -6,30 +6,21 @@
 
 /* Constructor , destructor */
 Reader::Reader() {
-	this->numLines = 0;
+	this->toParse = new vector<string>;
 }
 
-Reader::~Reader() {}
-
-/* Set up the input file */
-void Reader::setInputFile(string inputFilenameStr) {
-	this->inputFilename = inputFilenameStr;
+Reader::~Reader() {
+	delete this->toParse;
 }
 
-/* Prepares monitor */
-void Reader::setMonitor(Monitor * mon) {
-	this->monitor = mon;
+/* Obtain toParse vector */
+vector<string> * Reader::getToParseVector() {
+	return this->toParse;
 }
 
-/* Returns number of SNP lines */
-int Reader::getNumLines() {
-
-	/* For now, ignore updating the number of SNP lines */
-	return this->numLines;
-}
-
-/* Thread that reads the VCF file for parsing SNPs */
-void Reader::executeParse() {
+/* Read a given file for SNPs */
+void Reader::readToParse(string inputFileName) {
+	/* For now, single threaded read */
 	string line;
 	ifstream inputVCFFile(this->inputFilename);
 
@@ -39,8 +30,8 @@ void Reader::executeParse() {
 		return;
 	}
 
-	/* For now, read file in LINES - an optimisation would be
-	   to read in a certain number of bytes */
+	/* For now, read file in LINES, and sequentially
+	TODO: Research how this can be optimised */
 	while ( getline(inputVCFFile,line) ) {
 
 		/* Ignore all lines that start with '##' - most likely header info */
@@ -49,9 +40,8 @@ void Reader::executeParse() {
 		}
 
 		/* Pass the line as data to Monitor for processing */
-		this->monitor->addToParseData(line);
+		this->toParse->push_back(line);
 	}
 
 	inputVCFFile.close();
-
 }

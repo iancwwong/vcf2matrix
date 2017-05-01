@@ -44,8 +44,6 @@ class ConversionThread {
 						vector<ParsedSNP> * toWrite, mutex * toWrite_lock,
 						int * busyThreadsCount, mutex * busyThreadsCount_lock);
 
-		void executeParse(vector<string> toParse, vector<ParsedSNP> toWrite, int * busyThreadsCount);
-
 	private:
 
 		Converter * converter;			/* Reference to class that manages conversion */

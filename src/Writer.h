@@ -36,10 +36,11 @@ class Writer {
         /* Write the parsed SNPs */
         void executeParse();
 
+        /* Add to the write data list */
+        void addToWriteData(ParsedSNP data);
+
         /* Public fields */
-        vector<ParsedSNP> toWrite;          /* Reference to list of parsed SNPs to write */
-        mutex toWrite_lock;                 /* Lock to toWrite vector. Used by other classes
-                                                That attempt to modify toWrite. */
+
 
         /* Indicates previous procedure is completed. Used to terminate this class'
 		executeParse() thread. */
@@ -47,11 +48,14 @@ class Writer {
 
     private:
 
-        ofstream outputMatrixFile;          /* Reference to output matrix file */
-        ofstream outputLocFile;             /* Reference to output locations file */
-        ofstream outputSamplesNamesFile;    /* Reference to sample names */
+        ofstream outputMatrixFileName;          /* Reference to output matrix file */
+        ofstream outputLocFileName;             /* Reference to output locations file */
 
-        bool prevProcComplete;				/* Tracks whether previous process is completed */
+                vector<ParsedSNP> * toWrite;          /* Reference to list of parsed SNPs to write */
+        mutex * toWrite_lock;                 /* Lock to toWrite vector. Used by other classes
+                                                That attempt to modify toWrite. */
+
+        bool prevProcComplete;				    /* Tracks whether previous process is completed */
 };
 
 #endif

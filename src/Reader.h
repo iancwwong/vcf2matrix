@@ -18,9 +18,7 @@
 #include <fstream>
 #include <string>
 #include <iostream> /* Print error messages */
-#include <mutex>    /* Acquiring lock to 'toParse' in monitor */ 
-
-#include "Monitor.h"
+#include <vector>   /* contains toParse data */
 
 using namespace std;
 
@@ -31,23 +29,14 @@ class Reader {
         Reader();
         ~Reader();
 
-        /* Set up the input file */
-        void setInputFile(string inputFilenameStr);
+        /* Obtain toParse vector */
+        vector<string> * getToParseVector();
 
-        /* Prepares the monitor that will be used for parsing */
-        void setMonitor(Monitor * mon);
-
-        /* Returns number of SNP lines */
-        int getNumLines();
-  
-        /* Parses the SNPs in the vcf file */
-        void executeParse();
+        /* Read a given file for SNPs */
+        void readToParse(string inputFileName);
 
     private:
-        Monitor * monitor;      /* Reference to monitor that controls parsing threads */
-        string inputFilename;   /* Reference to input VCF file name */
-        int numLines;         /* Number of threads that should be run, 
-                                based on the properties of the input VCF file */
+       vector<string> * toParse;
 };
 
 #endif
