@@ -23,7 +23,6 @@ class ParsedSNP {
 		int chromosomeLoc;
 		string pos;
 		string parsed;
-
 };
 
 #endif

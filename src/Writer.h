@@ -3,8 +3,11 @@
  * WRITER
  * ----------------------
  * This class forms the writing component behind VCF parsing.
- * Able to accept parsed SNPs as encoded numbers, and write to
- * a specified external file.
+ * Runs a thread that writes parsed SNPs, as read from a vector.
+ * 
+ * This class' completion criteria is:
+ *  - Prev procedure is completed
+ *  - toWrite vector is empty
 **/
 
 #ifndef WRITER_H
@@ -12,6 +15,8 @@
 
 #include <fstream>
 #include <string>
+#include <vector>
+//#include <mutex>
 
 #include "ParsedSNP.h"
 
@@ -25,16 +30,28 @@ class Writer {
         Writer();
         ~Writer();
 
-        /* Set the appropriate names for output */
+        /* Preparation */
         void setOutputFilenames(string filename);
 
-        /* Write a VCF parsed line (ie matrix line) and record SNP location */
-        void writeParsedSNPLine(ParsedSNP pSNP);
+        /* Write the parsed SNPs */
+        void executeParse();
+
+        /* Public fields */
+        vector<ParsedSNP> toWrite;          /* Reference to list of parsed SNPs to write */
+        mutex toWrite_lock;                 /* Lock to toWrite vector. Used by other classes
+                                                That attempt to modify toWrite. */
+
+        /* Indicates previous procedure is completed. Used to terminate this class'
+		executeParse() thread. */
+		void signalPrevProcComplete();
 
     private:
+
         ofstream outputMatrixFile;          /* Reference to output matrix file */
         ofstream outputLocFile;             /* Reference to output locations file */
         ofstream outputSamplesNamesFile;    /* Reference to sample names */
+
+        bool prevProcComplete;				/* Tracks whether previous process is completed */
 };
 
 #endif

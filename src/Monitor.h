@@ -2,27 +2,24 @@
  * ----------------------
  * MONITOR
  * ----------------------
- * This class is the most complex in the tool.
+ * This term may be confused with the 'monitor' used in concurrency control,
+ * however this class is simply a container for all the conversion threads.
  * 
  * This class contains the threads of execution that are vital to
  * parsing the VCF file. It contains the two types of threads:
  *	- a list of CONVERTER threads (that aim to convert given data)
- *	- a concurrency management thread that manages the converter threads 
- *    (transfer of data)
  *
  * In particular, it has the following roles:
  * 	- Create a certain number of threads, and prepare them for execution (as well
  *	  as executing them)
  *	- Clean up threads when the overall procedure is finished
- *	- Manage concurrency between conversion threads when attempting to write
- *	  converted data
- *	- Give threads the data to be converted
- *	- Distinguishing between different required conversion procedures (from 
- *	  a previous calling class), and make the threads execute appropriate functions
- * 	- Use the Writer class to write converted data
- *
- * To maximise efficiency for large writes, monitor should call the writer 
- * whenever ~4K Bytes are ready be written.
+ *	- Keep track of a list of toParse SNPs (which are accessed by each thread)
+ * 	
+ * This class' completion criteria is:
+ *	- Previous procedure is completed (eg reader)
+ *	- toParse is empty
+ *	- numBusyThreads = 0
+ * 
 **/
 
 #ifndef MONITOR_H
@@ -30,6 +27,7 @@
 
 #include <vector>
 #include <mutex>
+#include <thread>
 
 #include "Writer.h"
 #include "ConversionThread.h"
@@ -46,34 +44,29 @@ class Monitor {
         ~Monitor();
 
 		/* Preparation functions */
-		/* Set the writer */
-		void setWriter(Writer writer);
-
-		/* Set the number of samples that exist in the VCF file */
-		void setNumSamples(int numSamples);
-
-		/* Set the number of threads to create */
-		void setNumThreads(int numThreads);
-
-		/* Set the parameters for parsing */
+		void setWriter(Writer * writer);
         void setParseParameters(int alleleFreq, int confScore);
 
-		/* Create the threads and run them */
-		void createAndExecuteThreads();
+        /* Thread that runs the parsing */
+        void executeParse();
 
-        /* Parse and write a VCF parsed line (ie matrix line) and record SNP location */
-        void parseSNPLine(string snpData);
+		/* Indicates previous procedure is completed. Used to terminate this class'
+		executeParse() thread. */
+		void signalPrevProcComplete();
+		
+		/* Public fields */
+		vector<string> toParse;							/* The list of data to parse */
+		mutex toParse_lock;	
+		int * busyThreadsCount;							/* Number of threads that are busy. */
+		mutex busyThreadsCount_lock;	
 
     private:
-		Writer writer;									/* Reference to Writer */
-        int numSamples;									/* number of samples that exist in a particular VCF file. 
-															Used to determine number of lines that should be stored before writing */
-		int numThreads;									/* number of conversion threads that this class will manage */
-		vector<ConversionThread> conversionThreads;		/* The list of conversion threads that parse/process information */
-		vector<ParsedSNP> toWrite;						/* The list of data to write. Flushed every time it's written' */
-		mutex toWrite_lock;								/* Lock to the 'toWrite' vector - concurrency control.
-															Acquire lock: toWrite_lock.lock()
-															Destroy lock: toWrite_lock.unlock() */
+		Writer * writer;									/* Reference to Writer. Needs to access (and the corr lock):
+																- toWrite vector */
+ 
+		vector<thread> conversionThreads;				/* The list of executing conversion threads that parse/process information */
+
+		bool prevProcComplete;							/* Tracks whether previous process is completed */
 
 		int alleleFreq;									/* Parsing purposes: These are arbitrary parsing parameters */
 		int confScore;

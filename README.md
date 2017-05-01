@@ -7,3 +7,9 @@ Attempts to convert a VCF file into a matrix quickly.
 	- Sequential read of VCF file ONCE (eg when parsing VCF file)
 	- Multithreaded conversion
 * When parsing the samples' names, Reader will look for the particular line (that entails the samples' names) and write directly.
+
+## ToDo
+* Make number of threads created DYNAMIC
+* To maximise efficiency for large writes, Writer should write whenever ~4K Bytes are ready be written.
+
+## Issues

@@ -2,11 +2,13 @@
  * ----------------------
  * CONVERSION THREAD
  * ----------------------
- * This class encapsulates a processing thread that parses a given input,
- * and then returns an output.
- * It utilises the 'Converter' class for conversion.
- * It's role:
- *	- Accept an input, put the converted data in a given memory location
+ * Essentially a consumer for the data to parse (as produced by the reader, and fed into Monitor),
+ * and the producer for the writer.
+ * 
+ * Runs a thread that converts a single SNP located in the toParse vector within monitor.
+ * 
+ * During parsing, it increments numBusyThreads in Monitor, and decrements it
+ * once the parsing is completed.
 **/
 
 #ifndef CONVERSIONTHREAD_H
@@ -14,7 +16,7 @@
 
 #include <vector>
 #include <string>
-#include <mutex>
+//#include <mutex>
 
 #include "Converter.h"
 #include "ParsedSNP.h"
@@ -27,14 +29,28 @@ class ConversionThread {
 		ConversionThread();
 		~ConversionThread();
 
-		/* Parsing */
-		void parseSNPData(string data, vector<ParsedSNP> writeVector, mutex writeVector_lock);
+		/* Preparation */
+		void setParseParameters(int alleleFreq, int confScore);
+
+		/* 
+			Parsing execution. 
+			This thread needs access to the following (and their locks): 
+				- toParse: Contains the SNPs to be parsed
+				- toWrite: Contains the parsed SNPs
+				- busyThreadCount: Increments it when parsing, decrements when completed
+		*/
+
+		void executeParse(vector<string> * toParse, mutex * toParse_lock,
+						vector<ParsedSNP> * toWrite, mutex * toWrite_lock,
+						int * busyThreadsCount, mutex * busyThreadsCount_lock);
+
+		void executeParse(vector<string> toParse, vector<ParsedSNP> toWrite, int * busyThreadsCount);
 
 	private:
-		bool state;				/* Indicator whether thread is busy processing */
-		Converter converter;	/* Reference to class that manages conversion */
 
-		int alleleFreq;			/* Parsing parameters */
+		Converter * converter;			/* Reference to class that manages conversion */
+
+		int alleleFreq;					/* Parsing parameters */
 		int confScore;
 };
 

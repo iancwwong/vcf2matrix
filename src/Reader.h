@@ -2,13 +2,14 @@
  * ----------------------
  * READER
  * ----------------------
- * This class forms the reading component behind VCF parsing. 
- * Reads the VCF file TWICE - once for preparation, and once for parsing.
- * It is also responsible for managing the threads that parse SNPs.
+ * This class forms the reading component behind VCF parsing, using a thread. 
+ * It's completion criteria is:
+ *  - when VCF file is completely read. 
+ * 
+ * Reads the VCF file sequentially (efficiency).
  * This class has the following roles:
  *  - Read and understand semantics of input (VCF) file
- *  - Determine number of 'Thread' classes to create (based on criteria)
- *  - Feed each SNP line to a 'Thread' class for processing
+ *  - Feed each SNP line to monitor
 **/
 
 #ifndef READER_H
@@ -29,16 +30,16 @@ class Reader {
         ~Reader();
 
         /* Set up the input file */
-        void setInputfile(string inputFilename);
+        void setInputFile(string inputFilename);
 
         /* Prepares the monitor that will be used for parsing */
-        void setMonitor(Monitor mon);
+        void setMonitor(Monitor * mon);
   
         /* Parses the SNPs in the vcf file */
-        void parseSNPs();
+        void executeParse();
 
     private:
-        Monitor monitor;        /* Reference to monitor that controls parsing threads */
+        Monitor * monitor;        /* Reference to monitor that controls parsing threads */
         fstream inputVCFFile;   /* Reference to input VCF file */
         int numThreads;         /* Number of threads that should be run, 
                                 based on the properties of the input VCF file */
