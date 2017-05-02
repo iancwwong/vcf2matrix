@@ -6,10 +6,10 @@
 #include <string>
 #include <thread>
 
-#include "Reader.h"
+#include "SNPReader.h"
 #include "SNPParser.h"
 #include "ParsedSNP.h"
-#include "Writer.h"
+#include "ParsedSNPWriter.h"
 
 using namespace std;
 
@@ -31,17 +31,17 @@ int main(int argc, char * argv[]) {
     cout << "Confidence Score: " << confScore << endl;
 
     /* Read the VCF file */
-    Reader reader;
+    SNPReader reader;
     reader.readToParse(filename);
-    vector<string> * toParse = reader.getToParseVector();
+    vector<string> * toParse = reader.getToParse();
 
     /* Parse the data */
     SNPParser parser;
-    parser.parserSNP(toParse);
-    vector<ParsedSNP> * toWrite = parser.getToWriteVector();
+    parser.parseSNPs(toParse);
+    vector<ParsedSNP> * toWrite = parser.getToWrite();
 
     /* Write the data */
-    Writer writer;
+    ParsedSNPWriter writer;
     writer.writeParsedSNP(toWrite, filename);
 
     return 0;

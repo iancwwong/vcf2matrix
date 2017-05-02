@@ -1,28 +1,30 @@
 /**
- * Implementation of the Reader class 
+ * Implementation of the SNPReader class 
 */
+#include <fstream>
+#include <iostream> /* Print error messages */
 
-#include "Reader.h"
+#include "SNPReader.h"
 
 /* Constructor , destructor */
-Reader::Reader() {
+SNPReader::SNPReader() {
 	this->toParse = new vector<string>;
 }
 
-Reader::~Reader() {
+SNPReader::~SNPReader() {
 	delete this->toParse;
 }
 
 /* Obtain toParse vector */
-vector<string> * Reader::getToParseVector() {
+vector<string> * SNPReader::getToParse() {
 	return this->toParse;
 }
 
 /* Read a given file for SNPs */
-void Reader::readToParse(string inputFileName) {
+void SNPReader::readToParse(string inputFileName) {
 	/* For now, single threaded read */
 	string line;
-	ifstream inputVCFFile(this->inputFilename);
+	ifstream inputVCFFile(inputFileName);
 
 	/* Check file opened properly */
 	if (!inputVCFFile.is_open()) {
