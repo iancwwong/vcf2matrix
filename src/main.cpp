@@ -38,7 +38,7 @@ int main(int argc, char * argv[]) {
     /* Parse the data */
     SNPParser parser;
     parser.parseSNPs(toParse);
-    vector<ParsedSNP> * toWrite = parser.getToWrite();
+    vector<ParsedSNP*> * toWrite = parser.getToWrite();
 
     /* Write the data */
     ParsedSNPWriter writer;

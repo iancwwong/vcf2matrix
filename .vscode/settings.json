@@ -4,6 +4,7 @@
 		"iosfwd": "cpp",
 		"mutex": "cpp",
 		"iostream": "cpp",
-		"fstream": "cpp"
+		"fstream": "cpp",
+		"thread": "cpp"
 	}
 }

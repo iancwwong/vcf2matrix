@@ -15,6 +15,7 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 
 #include "ParsedSNP.h"
 
@@ -30,8 +31,12 @@ class ParsedSNPWriter {
 
         /* Given parsed SNP's, write to a specific file with
            given file name */
-        void writeParsedSNP(vector<ParsedSNP> * toWrite, string filename);
+        void writeParsedSNP(vector<ParsedSNP *> * toWrite, string filename);
 
+    private: 
+        /* Thread function to write */
+        void writeThread(ofstream * locFile, ofstream * matrixFile, 
+                        vector<ParsedSNP *> * toWrite, int lowLimit, int upLimit);
 };
 
 #endif

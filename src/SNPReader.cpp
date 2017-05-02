@@ -45,5 +45,7 @@ void SNPReader::readToParse(string inputFileName) {
 		this->toParse->push_back(line);
 	}
 
+	cout << "Number of SNPs read: " << this->toParse->size() << endl;
+
 	inputVCFFile.close();
 }

@@ -27,10 +27,10 @@ class SNPParser {
 		void parseSNPs(vector<string> * toParse);
 
 		/* Return the parsed SNPs */
-		vector<ParsedSNP> * getToWrite();
+		vector<ParsedSNP *> * getToWrite();
 
 	private:
-		vector<ParsedSNP> * toWrite;
+		vector<ParsedSNP *> * toWrite;
 
 };
 
