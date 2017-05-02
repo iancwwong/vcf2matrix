@@ -8,7 +8,6 @@
 
 /* Constructor, destructor */
 ParsedSNPWriter::ParsedSNPWriter() {}
-
 ParsedSNPWriter::~ParsedSNPWriter() {}
 
 /* Given parsed SNP's, write to a specific file with
