@@ -21,6 +21,11 @@ vector<ParsedSNP *> * SNPParser::getToWrite() {
 
 /* Parse the given SNPs */
 void SNPParser::parseSNPs(vector<string> * toParse) {
-	
+
+}
+
+/* Thread that does the parsing */
+void SNPParser::parseThread(vector<string> * toParse, int lowLimit, int upLimit) {
+
 }
 

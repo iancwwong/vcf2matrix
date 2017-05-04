@@ -30,6 +30,8 @@ class SNPParser {
 		vector<ParsedSNP *> * getToWrite();
 
 	private:
+		/* Thread that does the parsing */
+		void parseThread(vector<string> * toParse, int lowLimit, int upLimit);
 		vector<ParsedSNP *> * toWrite;
 
 };
