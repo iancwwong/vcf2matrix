@@ -16,6 +16,20 @@
 
 using namespace std;
 
+/* Constants */
+/* VCF SNP Column representations */
+#define COL_CHROM 1
+#define COL_POS 2
+#define COL_ID 3
+#define COL_REF 4
+#define COL_ALT 5
+#define COL_QUAL 6
+#define COL_FILTER 7
+#define COL_INFO 8
+#define COL_FORMAT 9
+#define COL_SAMPLE 10
+
+/* Class definition */
 class Converter {
 
 	public:
