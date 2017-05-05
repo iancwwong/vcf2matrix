@@ -33,6 +33,8 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 	/* Track the column number */
 	unsigned int colNum = 1;
 
+	/* Data to preserve into the ParsedSNP obect */
+
 	/* Split data into pieces iteratively - by the VCF standard, data is tab-delimited */
 	char * colData = strtok(cstrdata, "\t");
 	while (colData != NULL) {
@@ -71,6 +73,9 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 
 		colNum++;
 	}
+
+	/* Only return a ParsedSNP if there were samples to evaluate */
+	if (colNum)
 
 	delete [] cstrdata;
 }
