@@ -37,7 +37,7 @@ int main(int argc, char * argv[]) {
 
     /* Parse the data */
     SNPParser parser;
-    parser.parseSNPs(toParse);
+    parser.parseSNPs(toParse, alleleFreq, confScore);
     vector<ParsedSNP*> * toWrite = parser.getToWrite();
 
     /* Write the data */

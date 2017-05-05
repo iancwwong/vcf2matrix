@@ -24,14 +24,17 @@ class SNPParser {
 		~SNPParser();
 
 		/* Parse the given SNPs */
-		void parseSNPs(vector<string> * toParse);
+		void parseSNPs(vector<string> * toParse, int alleleFreq, int confScore);
 
 		/* Return the parsed SNPs */
 		vector<ParsedSNP *> * getToWrite();
 
 	private:
 		/* Thread that does the parsing */
-		void parseThread(vector<string> * toParse, int lowLimit, int upLimit);
+		void parseThread(vector<string> * toParse, 
+						int alleleFreq, int confScore,
+						vector<ParsedSNP *> * toWrite,
+						int lowLimit, int upLimit);
 		vector<ParsedSNP *> * toWrite;
 
 };
