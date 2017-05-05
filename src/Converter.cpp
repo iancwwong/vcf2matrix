@@ -22,7 +22,5 @@ Converter::~Converter() {};
  */
 ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 
-	/* VCF 4.2 COLUMN FORMAT: #CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	[Sample names] */
-
-	return NULL;
+	/* Split data into pieces - by the standard, it is tab-delimited */
 }
