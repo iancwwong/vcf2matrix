@@ -41,7 +41,20 @@ void SNPReader::readToParse(string inputFileName) {
 			continue;
 		}
 
+
+		/* Ignore all lines that start with '#' - most likely vcf content info */
+		if (line.compare(0,1,"#") == 0) {
+			/* Note: Information from this string is important, and should be considered */
+			continue;
+		}
+
+		/* Ignore empty lines */
+		if (line.compare("") == 0) {
+			continue;
+		}
+
 		/* Pass the line as data to Monitor for processing */
+		//cout << "Line read: " << line << endl;
 		this->toParse->push_back(line);
 	}
 

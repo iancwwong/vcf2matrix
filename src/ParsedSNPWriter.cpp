@@ -74,6 +74,11 @@ void ParsedSNPWriter::writeThread(ofstream * locFile, ofstream * matrixFile,
 	/* Loop through index limits, write accordingly */
 	for (int i = lowLimit; i <= upLimit; i++) {
 		ParsedSNP * pSNP = (*toWrite)[i];
+
+		cout << "PSNP " << i << ": Chrom = " << pSNP->chromosomeLoc
+			<< ", Pos = " << pSNP->pos << ", Parsed: " << pSNP->parsed
+			<< ", numSamples = " << pSNP->numSamples << endl;
+
 		*locFile << pSNP->chromosomeLoc << "," << pSNP->pos << endl;
 		*matrixFile << pSNP->parsed << endl;
 	}
