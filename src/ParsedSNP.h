@@ -20,9 +20,10 @@ class ParsedSNP {
 		~ParsedSNP();
 
 		/* Fields that are extracted from SNP data */
-		int chromosomeLoc;
+		string chromosomeLoc;
 		string pos;
 		string parsed;
+		int numSamples;
 };
 
 #endif

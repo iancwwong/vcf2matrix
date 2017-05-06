@@ -29,6 +29,8 @@ using namespace std;
 #define COL_FORMAT 9
 #define COL_SAMPLE 10
 
+#define delimiter " "
+
 /* Class definition */
 class Converter {
 
@@ -40,6 +42,10 @@ class Converter {
 
 		/* Method to parse a line of data */
 		ParsedSNP * convert(string data, int alleleFreq, int confScore);
+	
+	private:
+		/* Count genotype (ie 0's and 1's) */
+		int * countGenotype(char * genotypeStr);
 
 };
 
