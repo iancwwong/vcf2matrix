@@ -24,8 +24,8 @@ void Concatenator::concatenate(vector<string> * subFileNames, string filename) {
 	/* Prepare final output filename (remove file extension component) */
 	string outputfn = filename.substr(0, filename.find_last_of(".")); 
 
-	cout << "Merging these files: " << endl;
-	for (int i = 0; subFileNames->size(); i++) {
+	cout << "Number of files to merge: " << subFileNames->size() << endl;
+	for (int i = 0; i < subFileNames->size(); i++) {
 		cout << "*" << (*subFileNames)[i] << endl;
 	}
 

@@ -41,6 +41,8 @@ void ParsedSNPWriter::createSubFiles(string filename) {
 
 /* Write a given parsed SNP into the opened files */
 void ParsedSNPWriter::writeParsedSNP(ParsedSNP * toWrite) {
+		cout << "Writing: " << endl;
+		toWrite->showDetails();
 		*this->locFile << toWrite->chromosomeLoc << "," << toWrite->pos << endl;
 		*this->matrixFile << toWrite->parsed << endl;
 }
