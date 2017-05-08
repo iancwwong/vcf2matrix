@@ -46,8 +46,6 @@ void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScor
 		int upperLimit = currIndex + threadNumItems - 1;
 
 		/* Create the thread */
-		cout << "Creating fcking thread " << i << endl;		
-
 		threads[i] = thread(&SNPParser::parseThread, this,
 									toParse, alleleFreq, confScore, 
 									this->toWrite,
@@ -58,9 +56,7 @@ void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScor
 	}
 
 	/* Wait for all threads to terminate */
-	cout << "Joining threads..." << endl;
 	for (int i = 0; i < numThreads; i++) {
-		cout << "Waiting for thread " << i << " to join..." << endl;
 		threads[i].join();
 	}
 

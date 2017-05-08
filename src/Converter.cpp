@@ -191,8 +191,8 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 	/* SNP has been successfully parsed */
 	else {
 		delete [] cstrdata;
-		cout << "Showing details..." << endl;
-		pSNP->showDetails();
+		// cout << "Showing details..." << endl;
+		// pSNP->showDetails();
 		return pSNP;
 	}
 }

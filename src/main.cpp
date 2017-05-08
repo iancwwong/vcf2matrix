@@ -27,19 +27,24 @@ int main(int argc, char * argv[]) {
     int confScore = atoi(argv[3]);
 
     /* Read the VCF file */
+    cout << "Reading vcf...";
     SNPReader reader;
     reader.readToParse(filename);
-    vector<string> * toParse = reader.getToParse();
+    cout << "Vcf file read!" << endl;
 
     /* Parse the data */
+    cout << "Parsing data...";
+    vector<string> * toParse = reader.getToParse();
     SNPParser parser;
     parser.parseSNPs(toParse, alleleFreq, confScore);
-    vector<ParsedSNP*> * toWrite = parser.getToWrite();
     cout << "Data parsed!" << endl;
 
     /* Write the data */
+    cout << "Writing data...";
+    vector<ParsedSNP*> * toWrite = parser.getToWrite();
     ParsedSNPWriter writer;
     writer.writeParsedSNP(toWrite, filename);
+    cout << "Data written!" << endl;
 
     return 0;
 }
