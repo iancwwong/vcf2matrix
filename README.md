@@ -7,6 +7,7 @@ Attempts to convert a VCF file into a matrix quickly.
 	- Using 'char *' instead of 'string' throughout program
 	- Read: using something other than ifstream
 * Todo:
+	- Parser should generate the subfiles in another directory (eg "temp")
 	- Decrease memory usage (program reads entire vcf into memory at this stage)
 	
 ## Issues
