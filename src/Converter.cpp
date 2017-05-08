@@ -2,6 +2,7 @@
  * Provides implementation for the Converter class
 **/
 #include <cstring> 		/* for splitting up data string based on delimiters */
+#include <iostream> 	/* printing debug statements */
 
 #include "Converter.h"
 
@@ -32,16 +33,21 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 
 	/* Track the column number */
 	unsigned int colNum = 1;
+	
+	/* For calculating allele frequency */
+	int numSamples = 0;
+	int * alleleFrequencies = new int[2];
+	alleleFrequencies[0] = 0;
+	alleleFrequencies[1] = 0;
 
 	/* Prepare ParsedSNP */
 	ParsedSNP * pSNP = new ParsedSNP();
 
-	/* Validity of given SNP. An inalid SNP is one that does not fulfil the 
-	given parameters, or some format error  */
-	bool validSNP = true;
+	/* Track validity of given SNP */
+	int invalidSNP = VALID_SNP;
 
 	/* Split data into pieces iteratively - by the VCF standard, data is tab-delimited */
-	char * colData = strtok(cstrdata, "\t");
+	char * colData = strtok_r(cstrdata, "\t", &cstrdata);
 	while (colData != NULL) {
 		
 		/* Interpret the column data based on column number */
@@ -63,7 +69,7 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 		else if (colNum == COL_REF) {
 			/* Early exit if INDEL or mulitiallelic */
 			if (strlen(colData) > 1 || strcmp(colData, ".") == 0) {
-				validSNP = false;
+				invalidSNP = INDEL_REF;
 				break;
 			}
 		}
@@ -72,7 +78,7 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 		else if (colNum == COL_ALT) {
 			/* Early exit if INDEL or mulitiallelic */
 			if (strlen(colData) > 1 || strcmp(colData, ".") == 0) {
-				validSNP = false;
+				invalidSNP = INDEL_ALT;
 				break;
 			}
 		}
@@ -82,7 +88,7 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 			/* Early exit if less than than desired */
 			int qual = atoi(colData);
 			if (atoi(colData) < confScore) {
-				validSNP = false;
+				invalidSNP = LOW_CONF_SCORE;
 				break;
 			}
 		}
@@ -100,52 +106,83 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 		else if (colNum >= COL_SAMPLE) {
 			/* First colon separated subfield is the genotype.
 			NOTE: A genotype string from strtok is expected */
-			char * genotypeData = strtok(colData, ":");
+
+			char * genotypeData = strtok_r(colData, ":", &colData);
+
 			if (genotypeData != NULL) {
 				int * genotypeCount = Converter::countGenotype(genotypeData);
 
 				/* Error with genotypeData occurred */
 				if (genotypeCount == NULL) {
-					validSNP = false;
+					invalidSNP = INVALID_GENOTYPE;
 					break;
 				}
 
-				/* Parse genotype combinations appropriately */
-				if (genotypeCount[0] == 2 && genotypeCount[1] == 0) {
+				/* 
+					Parse genotype combinations appropriately.
+					Encoding rule:
+						- 0|0 or 1|1: becomes '0'
+						- 0|1 or 1|0: becomes '1'
+				*/
+				if ((genotypeCount[0] == 2 && genotypeCount[1] == 0)
+					|| (genotypeCount[0] == 0 && genotypeCount[1] == 2)) {
+
 					pSNP->parsed = pSNP->parsed + "0" + delimiter;
+					alleleFrequencies[0]++;
+
 				} else if (genotypeCount[0] == 1 && genotypeCount[1] == 1) {
 					pSNP->parsed = pSNP->parsed + "1" + delimiter;
-				} else if (genotypeCount[0] == 0 && genotypeCount[1] == 2) {
-					pSNP->parsed = pSNP->parsed + "2" + delimiter;
-				}
+					alleleFrequencies[1]++;
+				} 
 
 				/* Another case not considered */
 				else {
-					validSNP = false;
+					invalidSNP = UNKNOWN_ERROR;
 					break;
 				}
 
 				/* At this point, sample was parsed: increment numSamples */
-				pSNP->numSamples++;
+				numSamples++;
 			}
 			
 			/* Should not be null - early exit (invalid vcf SNP) */
 			else {
-				validSNP = false;
+				invalidSNP = NO_GENOTYPE_FOUND;
 				break;
 			}
 		}
 
+		colData = strtok_r(cstrdata, "\t", &cstrdata);
 		colNum++;
 	}
 
 	/* Invalid SNP when no samples were evaluated */
-	if (colNum <= COL_SAMPLE) {
-		validSNP = false;
+	if (numSamples == 0) {
+		invalidSNP = NO_SAMPLES_EVAL;
 	}
 
 	/* Case when an invalid SNP is detected - clean up, and return NULL */
-	if (!validSNP) {
+	if (invalidSNP) {
+		cout << "SNP was not valid. Error code: " << invalidSNP << endl;
+		delete [] cstrdata;
+		delete pSNP;
+		return NULL;
+	} 
+
+	/* FURTHER CHECKS FOR SNP INVALIDITY */
+
+	/* Invalid SNP when allele frequency criteria not met */
+	if (Converter::calcAlleleFreq(alleleFrequencies) < (double)alleleFreq) {
+		invalidSNP = LOW_ALLELE_FREQ;
+	}
+
+	/* Clean up */
+	delete [] cstrdata;
+	delete [] alleleFrequencies;
+
+	/* Case when an invalid SNP is detected - clean up, and return NULL */
+	if (invalidSNP) {
+		cout << "SNP was not valid. Error code: " << invalidSNP << endl;
 		delete [] cstrdata;
 		delete pSNP;
 		return NULL;
@@ -154,6 +191,8 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 	/* SNP has been successfully parsed */
 	else {
 		delete [] cstrdata;
+		cout << "Showing details..." << endl;
+		pSNP->showDetails();
 		return pSNP;
 	}
 }
@@ -171,7 +210,7 @@ int * Converter::countGenotype(char * genotypeStr) {
 
 	bool validSNP = true;
 
-	char * genotype = strtok(genotypeStr, "/|");	/* '/' for halpotypes */
+	char * genotype = strtok_r(genotypeStr, "/|", &genotypeStr);	/* '/' for halpotypes */
 	while (genotype != NULL) {
 		int gVal = atoi(genotype);
 		
@@ -182,6 +221,7 @@ int * Converter::countGenotype(char * genotypeStr) {
 		}
 
 		/* Increment the count */
+		genotype = strtok_r(genotypeStr, "/|", &genotypeStr);
 		genotypeCount[gVal]++;
 	}
 
@@ -191,4 +231,25 @@ int * Converter::countGenotype(char * genotypeStr) {
 		delete [] genotypeCount;
 		return NULL;
 	}
+}
+
+/**
+ * Calculate allele frequency
+ *
+ * In particular, calculate the percentage of samples that possess
+ * only either the reference or alternative allele.
+ * Samples that only have either the reference or alternative allele
+ * are given '0', with the other being '1'.
+**/
+double Converter::calcAlleleFreq(int * alleleFrequencies) {
+
+	/* Prevent division by 0 */
+	if ((alleleFrequencies[0] == 0) && (alleleFrequencies[1] == 0)) {
+		return 0;
+	}
+
+	double total = (double)alleleFrequencies[0] + (double)alleleFrequencies[1];
+	double alleleFreq = (double) alleleFrequencies[0] * 100 / total;
+
+	return alleleFreq;
 }

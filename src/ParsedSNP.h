@@ -23,7 +23,9 @@ class ParsedSNP {
 		string chromosomeLoc;
 		string pos;
 		string parsed;
-		int numSamples;
+
+		/* Debugging */
+		void showDetails();
 };
 
 #endif

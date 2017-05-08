@@ -13,7 +13,7 @@ ParsedSNPWriter::~ParsedSNPWriter() {}
 /* Given parsed SNP's, write to a specific file with
 	given file name */
 void ParsedSNPWriter::writeParsedSNP(vector<ParsedSNP *> * toWrite, string filename) {
-	
+
 	/* Create the files - one for location, one for matrix */
 	string outputfn = filename.substr(0, filename.find_last_of(".")); /* remove file extension component */
 	ofstream locFile(outputfn + "_locations.loc");
@@ -74,10 +74,6 @@ void ParsedSNPWriter::writeThread(ofstream * locFile, ofstream * matrixFile,
 	/* Loop through index limits, write accordingly */
 	for (int i = lowLimit; i <= upLimit; i++) {
 		ParsedSNP * pSNP = (*toWrite)[i];
-
-		cout << "PSNP " << i << ": Chrom = " << pSNP->chromosomeLoc
-			<< ", Pos = " << pSNP->pos << ", Parsed: " << pSNP->parsed
-			<< ", numSamples = " << pSNP->numSamples << endl;
 
 		*locFile << pSNP->chromosomeLoc << "," << pSNP->pos << endl;
 		*matrixFile << pSNP->parsed << endl;

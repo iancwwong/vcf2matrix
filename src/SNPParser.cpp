@@ -2,6 +2,7 @@
  * Provides implementation for the SNPParser class
 **/
 #include <thread>
+#include <iostream>		/* for printing debug statements */
 
 #include "SNPParser.h"
 #include "Converter.h"
@@ -24,8 +25,9 @@ vector<ParsedSNP *> * SNPParser::getToWrite() {
 void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScore) {
 
 	/* Create and run the threads that will parse data */
-	vector<thread*> threads;
-	int numThreads = 4;	/* For now, it's a fixed number */
+	
+	int numThreads = 1;	/* For now, it's a fixed number */
+	thread * threads = new thread[numThreads];
 
 	/* For determining toWrite access index values for each thread */
 	int baseNumItems = toParse->size() / numThreads;	
@@ -44,20 +46,25 @@ void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScor
 		int upperLimit = currIndex + threadNumItems - 1;
 
 		/* Create the thread */
-		thread * pThread = new thread(&SNPParser::parseThread, SNPParser(),
+		cout << "Creating thread..." << endl;		
+		threads[i] = thread(&SNPParser::parseThread, SNPParser(),
 									toParse, alleleFreq, confScore, 
 									this->toWrite,
 									lowerLimit, upperLimit);
-		threads.push_back(pThread);
+		cout << "Thread is created and running! " << endl;
 
 		/* Update currIndex */
 		currIndex += threadNumItems;
 	}
 
 	/* Wait for all threads to terminate */
-	for (int i = 0; i < threads.size(); i++) {
-		threads[i]->join();
+	cout << "Joining threads..." << endl;
+	for (int i = 0; i < numThreads; i++) {
+		cout << "Waiting for thread " << i << " to join..." << endl;
+		threads[i].join();
 	}
+
+	delete [] threads;
 
 }
 
@@ -78,7 +85,6 @@ void SNPParser::parseThread(vector<string> * toParse,
 		if (pSNP != NULL) {
 			toWrite->push_back(pSNP);
 		}
-
 	}
 }
 

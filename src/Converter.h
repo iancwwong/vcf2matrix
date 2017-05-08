@@ -29,6 +29,19 @@ using namespace std;
 #define COL_FORMAT 9
 #define COL_SAMPLE 10
 
+/* Error codes for invalid SNPs */
+#define VALID_SNP 0
+#define INDEL_REF 1
+#define INDEL_ALT 2
+#define LOW_CONF_SCORE 3
+#define INVALID_GENOTYPE 4
+#define LOW_ALLELE_FREQ 5
+#define NO_SAMPLES_EVAL 6
+#define NO_GENOTYPE_FOUND 7
+
+#define UNKNOWN_ERROR 50
+
+/* Delimiter used to separate the encoded matrix values */
 #define delimiter " "
 
 /* Class definition */
@@ -46,6 +59,9 @@ class Converter {
 	private:
 		/* Count genotype (ie 0's and 1's) */
 		int * countGenotype(char * genotypeStr);
+
+		/* Calculate allele frequency */
+		double calcAlleleFreq(int * alleleFrequencies);
 
 };
 
