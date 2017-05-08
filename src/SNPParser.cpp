@@ -9,32 +9,36 @@
 
 /* Constructor, destructor */
 SNPParser::SNPParser() {
-	this->toWrite = new vector<ParsedSNP *>;
+	this->subfilenames = new vector<string>;
+	this->numThreads = 1;		/* default */
 };
 
 SNPParser::~SNPParser() {
-	delete this->toWrite;
+	delete this->subfilenames;
 };
 
-/* Return the parse SNPs */
-vector<ParsedSNP *> * SNPParser::getToWrite() {
-	return this->toWrite;
+void SNPParser::setNumThreads(int nThreads) {
+	this->numThreads = nThreads;
 }
+
+/* Return the list of names by which the subfiles are created */
+vector<string> * SNPParser::getSubFileNames() {
+	return this->subfilenames;
+}
+
 
 /* Parse the given SNPs */
 void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScore) {
 
 	/* Create and run the threads that will parse data */
-	
-	int numThreads = 4;	/* For now, it's a fixed number */
-	thread * threads = new thread[numThreads];
+	thread * threads = new thread[this->numThreads];
 
 	/* For determining toWrite access index values for each thread */
-	int baseNumItems = toParse->size() / numThreads;	
-	int overflow = toParse->size() % numThreads;
+	int baseNumItems = toParse->size() / this->numThreads;	
+	int overflow = toParse->size() % this->numThreads;
 	int currIndex = 0;
 
-	for (int i = 0; i < numThreads; i++) {
+	for (int i = 0; i < this->numThreads; i++) {
 
 		/* Determine the index values */
 		int threadNumItems = baseNumItems;
@@ -45,11 +49,20 @@ void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScor
 		int lowerLimit = currIndex;
 		int upperLimit = currIndex + threadNumItems - 1;
 
+		/* Generate the subFileName from which the location and
+		 * matrix subfiles (created by parser thread) are to follow
+		 * 
+		 * Currently: "__[thread number]"
+		 */
+		string subfilename = "__" + to_string(i);
+
 		/* Create the thread */
 		threads[i] = thread(&SNPParser::parseThread, this,
-									toParse, alleleFreq, confScore, 
-									this->toWrite,
-									lowerLimit, upperLimit);
+							subfilename, toParse, alleleFreq, confScore, 
+							lowerLimit, upperLimit);
+
+		/* Preserve created subfilename */
+		this->subfilenames->push_back(subfilename);
 
 		/* Update currIndex */
 		currIndex += threadNumItems;
@@ -65,10 +78,13 @@ void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScor
 }
 
 /* Thread that does the parsing */
-void SNPParser::parseThread(vector<string> * toParse, 
+void SNPParser::parseThread(string subfilename, vector<string> * toParse, 
 						int alleleFreq, int confScore,
-						vector<ParsedSNP *> * toWrite,
 						int lowLimit, int upLimit) {
+
+	/* Writer intialisation */
+	ParsedSNPWriter writer;
+	writer.createSubFiles(subfilename);
 
 	/* Converter initialisation */
 	Converter c;
@@ -77,9 +93,9 @@ void SNPParser::parseThread(vector<string> * toParse,
 	for (int i = lowLimit; i <= upLimit; i++) {
 		ParsedSNP * pSNP = c.convert((*toParse)[i], alleleFreq, confScore);
 
-		/* Cases when the toParse SNP is parsed, eg due to parameters */
+		/* Cases when the SNP is successfully parsed: write */
 		if (pSNP != NULL) {
-			toWrite->push_back(pSNP);
+			writer.writeParsedSNP(pSNP);
 		}
 	}
 }

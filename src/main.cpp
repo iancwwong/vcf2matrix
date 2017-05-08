@@ -43,7 +43,7 @@ int main(int argc, char * argv[]) {
     cout << "Concatenating files...";
     vector<string> * subFileNames = parser.getSubFileNames();
     Concatenator c;
-    c.concatenate(subFileNames);
+    c.concatenate(subFileNames, filename);
     cout << "Files concatenated!" << endl;
 
     return 0;

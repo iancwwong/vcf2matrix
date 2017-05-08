@@ -24,10 +24,12 @@ class ParsedSNPWriter {
         ParsedSNPWriter();
         ~ParsedSNPWriter();
 
-        /* Open a file to write parsed SNPs */
-        void createSubFile(string filename);
+        /* Create the files that contain parsed SNP info.
+         * Namely: location, matrix
+         */
+        void createSubFiles(string filename);
 
-        /* Write a given parsed SNP into the opened file */
+        /* Write a given parsed SNP into the opened files */
         void writeParsedSNP(ParsedSNP * toWrite);
 
     private: 
