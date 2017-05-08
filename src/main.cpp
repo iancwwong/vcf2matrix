@@ -38,10 +38,8 @@ int main(int argc, char * argv[]) {
     cout << "Data parsed!" << endl;
 
     /* Write the data */
-    cout << "Writing datat..." << endl;
     ParsedSNPWriter writer;
     writer.writeParsedSNP(toWrite, filename);
-    cout << "Written data!" << endl;
 
     return 0;
 }
