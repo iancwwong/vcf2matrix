@@ -8,8 +8,7 @@
 
 #include "SNPReader.h"
 #include "SNPParser.h"
-#include "ParsedSNP.h"
-#include "ParsedSNPWriter.h"
+#include "Concatenator.h"
 
 using namespace std;
 
@@ -32,19 +31,20 @@ int main(int argc, char * argv[]) {
     reader.readToParse(filename);
     cout << "Vcf file read!" << endl;
 
-    /* Parse the data */
-    cout << "Parsing data...";
+    /* Parse the data, and write parsed data to subfiles */
+    cout << "Parsing and writing data...";
     vector<string> * toParse = reader.getToParse();
     SNPParser parser;
+    parser.setNumThreads(4);
     parser.parseSNPs(toParse, alleleFreq, confScore);
-    cout << "Data parsed!" << endl;
+    cout << "Data parsed, sub files generated!" << endl;
 
-    /* Write the data */
-    cout << "Writing data...";
-    vector<ParsedSNP*> * toWrite = parser.getToWrite();
-    ParsedSNPWriter writer;
-    writer.writeParsedSNP(toWrite, filename);
-    cout << "Data written!" << endl;
+    /* Concatenate the parsed subfiles */
+    cout << "Concatenating files...";
+    vector<string> * subFileNames = parser.getSubFileNames();
+    Concatenator c;
+    c.concatenate(subFileNames);
+    cout << "Files concatenated!" << endl;
 
     return 0;
 }
