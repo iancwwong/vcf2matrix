@@ -29,6 +29,9 @@ class ParsedSNPWriter {
          */
         void createSubFiles(string filename);
 
+        /* Close all the files */
+        void closeSubFiles();
+
         /* Write a given parsed SNP into the opened files */
         void writeParsedSNP(ParsedSNP * toWrite);
 

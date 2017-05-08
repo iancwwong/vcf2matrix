@@ -30,14 +30,18 @@ void Concatenator::concatenate(vector<string> * subFileNames, string filename) {
 	}
 
 	/* Create the handlers to location and matrix files */
-	// ofstream locFile(outputfn + "_locations.loc");
-	// if (!locFile.is_open()) {
-	// 	cout << "Unable to create a locations file." << endl;
-	// 	return;
-	// }
-	// ofstream matrixFile(outputfn + "_matrix.matrix");
-	// if (!matrixFile.is_open()) {
-	// 	cout << "Unable to create a matrix file." << endl;
-	// 	return;
-	// }
+	ofstream locFile(outputfn + "_locations.loc");
+	if (!locFile.is_open()) {
+		cout << "Unable to create a locations file." << endl;
+		return;
+	}
+	ofstream matrixFile(outputfn + "_matrix.matrix");
+	if (!matrixFile.is_open()) {
+		cout << "Unable to create a matrix file." << endl;
+		return;
+	}
+
+	/* Close the final output files */
+	locFile.close();
+	matrixFile.close();
 }

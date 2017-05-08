@@ -12,6 +12,14 @@ ParsedSNPWriter::ParsedSNPWriter() {
 	this->matrixFile = NULL;
 }
 ParsedSNPWriter::~ParsedSNPWriter() {
+
+	/* Make sure file handlers are CLOSED before deleting */
+	if (this->locFile->is_open()) {
+		this->locFile->close();
+	}
+	if (this->matrixFile->is_open()) {
+		this->matrixFile->close();
+	}
 	delete this->locFile;
 	delete this->matrixFile;
 	this->locFile = NULL;
@@ -37,6 +45,12 @@ void ParsedSNPWriter::createSubFiles(string filename) {
 		cout << "Unable to create a matrix file." << endl;
 		return;
 	}
+}
+
+/* Close all the files */
+void ParsedSNPWriter::closeSubFiles() {
+	this->locFile->close();
+	this->matrixFile->close();
 }
 
 /* Write a given parsed SNP into the opened files */

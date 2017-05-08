@@ -98,5 +98,8 @@ void SNPParser::parseThread(string subfilename, vector<string> * toParse,
 			writer.writeParsedSNP(pSNP);
 		}
 	}
+
+	/* Close the subfiles */
+	writer.closeSubFiles();
 }
 
