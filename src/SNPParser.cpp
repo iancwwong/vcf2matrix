@@ -46,14 +46,12 @@ void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScor
 		int upperLimit = currIndex + threadNumItems - 1;
 
 		/* Create the thread */
-		cout << "Creating thread " << i << endl;		
+		cout << "Creating fcking thread " << i << endl;		
 
-		threads[i] = thread(&SNPParser::parseThread, SNPParser(),
+		threads[i] = thread(&SNPParser::parseThread, this,
 									toParse, alleleFreq, confScore, 
 									this->toWrite,
 									lowerLimit, upperLimit);
-
-		cout << "Thread is created and running! " << endl;
 
 		/* Update currIndex */
 		currIndex += threadNumItems;
@@ -80,15 +78,13 @@ void SNPParser::parseThread(vector<string> * toParse,
 	Converter c;
 
 	/* Loop through index limits, parse accordingly */
-	// for (int i = lowLimit; i <= upLimit; i++) {
-	// 	ParsedSNP * pSNP = c.convert((*toParse)[i], alleleFreq, confScore);
+	for (int i = lowLimit; i <= upLimit; i++) {
+		ParsedSNP * pSNP = c.convert((*toParse)[i], alleleFreq, confScore);
 
-	// 	/* Cases when the toParse SNP is parsed, eg due to parameters */
-	// 	if (pSNP != NULL) {
-	// 		toWrite->push_back(pSNP);
-	// 	}
-	// }
-
-	cout << "Thread is done processing. " << endl;
+		/* Cases when the toParse SNP is parsed, eg due to parameters */
+		if (pSNP != NULL) {
+			toWrite->push_back(pSNP);
+		}
+	}
 }
 
