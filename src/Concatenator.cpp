@@ -36,6 +36,22 @@ void Concatenator::concatenate(vector<string> * subFileNames, string filename) {
 		return;
 	}
 
+	/* Iterate over each subfilename, merging them into the final files */
+	for (int i = 0; i < subFileNames->size(); i++) {
+
+		string subfilename = (*subFileNames)[i];
+
+		/* Merge location */
+		ifstream locToMerge(subfilename + ".loc");
+		locFile << locToMerge.rdbuf();
+		locToMerge.close();
+
+		/* Merge matrix */
+		ifstream matrixToMerge(subfilename + ".matrix");
+		matrixFile << matrixToMerge.rdbuf();
+		matrixToMerge.close();
+	}
+
 	/* Close the final output files */
 	locFile.close();
 	matrixFile.close();
