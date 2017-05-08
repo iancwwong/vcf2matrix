@@ -24,11 +24,6 @@ void Concatenator::concatenate(vector<string> * subFileNames, string filename) {
 	/* Prepare final output filename (remove file extension component) */
 	string outputfn = filename.substr(0, filename.find_last_of(".")); 
 
-	cout << "Number of files to merge: " << subFileNames->size() << endl;
-	for (int i = 0; i < subFileNames->size(); i++) {
-		cout << "*" << (*subFileNames)[i] << endl;
-	}
-
 	/* Create the handlers to location and matrix files */
 	ofstream locFile(outputfn + "_locations.loc");
 	if (!locFile.is_open()) {
