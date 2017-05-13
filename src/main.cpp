@@ -35,8 +35,8 @@ int main(int argc, char * argv[]) {
     /* Parse the data, and write parsed data to subfiles */
     cout << "Parsing and writing data...";
     vector<string> * toParse = reader.getToParse();
+    cout << "Number of SNPs read: " << toParse->size();
     SNPBasicParser parser;
-    parser.parseSNPs(toParse, alleleFreq, confScore);
     parser.parseSNPs(toParse, alleleFreq, confScore);
     cout << "Data parsed!" << endl;
 
