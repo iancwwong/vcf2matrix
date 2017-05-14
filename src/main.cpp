@@ -7,7 +7,7 @@
 #include <thread>
 
 #include "SNPReader.h"
-//#include "SNPParser.h"
+#include "SNPParser.h"
 #include "SNPBasicParser.h"
 #include "Concatenator.h"
 
@@ -35,8 +35,8 @@ int main(int argc, char * argv[]) {
     /* Parse the data, and write parsed data to subfiles */
     cout << "Parsing and writing data...";
     vector<string> * toParse = reader.getToParse();
-    cout << "Number of SNPs read: " << toParse->size();
-    SNPBasicParser parser;
+    SNPParser parser;
+    parser.setNumThreads(4);
     parser.parseSNPs(toParse, alleleFreq, confScore);
     cout << "Data parsed!" << endl;
 

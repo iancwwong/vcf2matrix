@@ -2,6 +2,7 @@
  * This file implements the Concatenator class 
 */
 #include <fstream>
+#include <cstdio>			/* removing files */
 #include <iostream> 		/* for printing debug statements */
 
 #include "Concatenator.h"
@@ -42,14 +43,22 @@ void Concatenator::concatenate(vector<string> * subFileNames, string filename) {
 		string subfilename = (*subFileNames)[i];
 
 		/* Merge location */
-		ifstream locToMerge(subfilename + ".loc");
+		string locationSubfilename = subfilename + ".loc";
+		ifstream locToMerge(locationSubfilename);
 		locFile << locToMerge.rdbuf();
 		locToMerge.close();
+		if (remove(locationSubfilename.c_str()) != 0) {
+			cout << "Error removing location subfile: " << locationSubfilename << endl;
+		}
 
 		/* Merge matrix */
-		ifstream matrixToMerge(subfilename + ".matrix");
+		string matrixSubfilename = subfilename + ".matrix";
+		ifstream matrixToMerge(matrixSubfilename);
 		matrixFile << matrixToMerge.rdbuf();
 		matrixToMerge.close();
+		if (remove(matrixSubfilename.c_str()) != 0) {
+			cout << "Error removing matrix subfile: " << matrixSubfilename << endl;
+		}
 	}
 
 	/* Close the final output files */
