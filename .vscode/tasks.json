@@ -5,7 +5,7 @@
     "command": "g++",
     "isShellCommand": true,
     "args": ["-std=c++11", "-O4", "-pthread",
-                "src/*.cpp",
+                "src/*.cpp", "-fopenmp",
                 "-o", "vcf2matrix"],
     "showOutput": "always"
 }

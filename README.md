@@ -17,7 +17,7 @@ Attempts to convert a VCF file into a matrix quickly.
 	- Allele frequency needs to be calculated based on percentage of samples that possess the alternative allele
 	
 ## Issues
-	- Program crashes at around 1M samples (even if there's only ONE SNP)
+* Program crashes at around 1M samples (even if there's only ONE SNP)
 	
 ## VCF 4.2 Standard
 Found at:

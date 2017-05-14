@@ -30,11 +30,13 @@ void SNPBasicParser::parseSNPs(vector<string> * toParse, int alleleFreq, int con
 	Converter c;
 
 	/* Loop through index limits, parse accordingly */
+	#pragma omp parallel for
 	for (int i = 0; i <= toParse->size(); i++) {
 		ParsedSNP * pSNP = c.convert((*toParse)[i], alleleFreq, confScore);
 
 		/* Cases when the SNP is successfully parsed: write */
 		if (pSNP != NULL) {
+			#pragma omp critical(writeSNP)
 			writer.writeParsedSNP(pSNP);
 		}
 	}
