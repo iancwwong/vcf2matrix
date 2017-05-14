@@ -96,11 +96,13 @@ void SNPParser::parseThread(string subfilename, vector<string> * toParse,
 	Converter c;
 
 	/* Loop through index limits, parse accordingly */
+	//#pragma omp parallel for
 	for (int i = lowLimit; i <= upLimit; i++) {
 		ParsedSNP * pSNP = c.convert((*toParse)[i], alleleFreq, confScore);
 
 		/* Cases when the SNP is successfully parsed: write */
 		if (pSNP != NULL) {
+			//#pragma omp critical(writeSNP)
 			writer.writeParsedSNP(pSNP);
 		}
 	}
