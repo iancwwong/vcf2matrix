@@ -36,7 +36,7 @@ int main(int argc, char * argv[]) {
     cout << "Parsing and writing data...";
     vector<string> * toParse = reader.getToParse();
     SNPParser parser;
-    parser.setNumThreads(4);
+    parser.setNumThreads(8);
     parser.parseSNPs(toParse, alleleFreq, confScore);
     cout << "Data parsed!" << endl;
 
