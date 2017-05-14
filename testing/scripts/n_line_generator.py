@@ -26,6 +26,8 @@ info = "."
 format = "GT"
 snp_info = [chrom, pos, id, ref, alt, qual, filter, info, format]
 
+numLinesWritten = 0
+
 # Generate random genotypes
 for row in range(0,numSNPs):
 	row_str = "";
@@ -40,3 +42,5 @@ for row in range(0,numSNPs):
 		randGT = GT_options[0]
 		row_str += randGT + "\t"
 	print row_str.strip()
+	
+	numLinesWritten += 1

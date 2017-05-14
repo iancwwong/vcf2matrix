@@ -121,8 +121,9 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 				/* 
 					Parse genotype combinations appropriately.
 					Encoding rule:
-						- 0|0 or 1|1: becomes '0'
-						- 0|1 or 1|0: becomes '1'
+						- 0|0: becomes '0'
+						- 1|0: becomes '1'
+						- 0|1 or 1|0: becomes '2'
 				*/
 				if ((genotypeCount[0] == 2 && genotypeCount[1] == 0)
 					|| (genotypeCount[0] == 0 && genotypeCount[1] == 2)) {
@@ -237,9 +238,7 @@ int * Converter::countGenotype(char * genotypeStr) {
  * Calculate allele frequency
  *
  * In particular, calculate the percentage of samples that possess
- * only either the reference or alternative allele.
- * Samples that only have either the reference or alternative allele
- * are given '0', with the other being '1'.
+ * the alternative allele
 **/
 double Converter::calcAlleleFreq(int * alleleFrequencies) {
 

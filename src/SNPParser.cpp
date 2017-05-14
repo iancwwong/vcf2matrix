@@ -30,6 +30,12 @@ vector<string> * SNPParser::getSubFileNames() {
 /* Parse the given SNPs */
 void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScore) {
 
+	/* Reduce number of threads in case numthreads > numlines to parse */
+	if (this->numThreads > toParse->size()) {
+		this->numThreads = 1;
+		cout << "Threads changed to 1..." << endl;
+	}
+
 	/* Create and run the threads that will parse data */
 	thread * threads = new thread[this->numThreads];
 
