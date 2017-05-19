@@ -31,7 +31,7 @@ class SNPParser {
 		void setNumThreads(int nThreads);
 
 		/* Parse the given SNPs */
-		void parseSNPs(vector<string> * toParse, int alleleFreq, int confScore);
+		void parseSNPs(vector<string *> * toParse, int alleleFreq, int confScore);
 
 		/* Return the list of names by which the subfiles are created */
 		vector<string> * getSubFileNames();
@@ -42,7 +42,7 @@ class SNPParser {
 		 * Each thread is given a specific name for its corresponding subfiles,
 		 * generated from its ID
 		 */
-		void parseThread(string subfilename, vector<string> * toParse, 
+		void parseThread(string subfilename, vector<string *> * toParse, 
 						int alleleFreq, int confScore,
 						int lowLimit, int upLimit);
 		

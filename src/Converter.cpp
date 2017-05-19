@@ -1,10 +1,27 @@
 /**
  * Provides implementation for the Converter class
 **/
-#include <cstring> 		/* for splitting up data string based on delimiters */
+//#include <cstring> 		/* for splitting up data string based on delimiters */
 #include <iostream> 	/* printing debug statements */
+#include <regex>		/* For extracting desired fields from string */
 
 #include "Converter.h"
+
+/* Regexes used to extract info */
+/* Extracts: Ref, Alt, and Qual */
+#define FIRST_REGEX "^(?:[^\t]*\t){3}([^\t]*)\t([^\t]*)\t([^\t]*)\t.*$"
+
+/* Extracts: Chr, pos, and genotypes */
+#define SECOND_REGEX "^([^\t]*)\t([^\t]*)\t(?:[^\t]*\t){7}(.*)$"
+
+/* Regex match offsets */
+#define INDEX_REF 1
+#define INDEX_ALT 2
+#define INDEX_QUAL 3
+
+#define INDEX_CHROMOSOME 1
+#define INDEX_POS 2
+#define INDEX_GENOTYPES 3
 
 /* Constructor, destructor */
 Converter::Converter() {};
@@ -27,176 +44,113 @@ Converter::~Converter() {};
  */
 ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 
-	/* Convert data into char * */
-	char * cstrdata = new char[data.length() + 1];		/* remember to: delete [] cstrdata! */
-	strcpy(cstrdata, data.c_str());
+	/* Regex extract the Reference, Alternative, and Qual columns */
+	regex firstRegex ("^(?:[^\t]*\t){3}([^\t]*)\t([^\t]*)\t([^\t]*)\t.*$");
+	smatch firstMatches;
+	regex_match(data, firstMatches, firstRegex);
 
-	/* Track the column number */
-	unsigned int colNum = 1;
-	
-	/* For calculating allele frequency */
-	int numSamples = 0;
-	int * alleleFrequencies = new int[2];
-	alleleFrequencies[0] = 0;
-	alleleFrequencies[1] = 0;
+	string ref = *(firstMatches.begin() + INDEX_REF);
+	string alt = *(firstMatches.begin() + INDEX_ALT);
+	string qual = *(firstMatches.begin() + INDEX_QUAL);
 
-	/* Prepare ParsedSNP */
+	/* Indel cases */
+	if (ref.length() >= 2 || ref[0] == '.' || alt.length() >= 2 || alt[0] == '.') {
+		cout << "Indel detected!" << endl;
+		return NULL;
+	}
+
+	/* Case when conf score is too low */
+	int conf = stoi(qual, nullptr);
+	if (conf < confScore) {
+		cout << "Too low conf score!" << endl;
+		return NULL;
+	}
+
+	/* Regex match the data to extract: chrom, pos, and genotypes */
+	regex secondRegex (SECOND_REGEX);
+	smatch secondMatches;
+	regex_match(data, secondMatches, secondRegex);
+
+	/* Prepare the ParsedSNP to return */
 	ParsedSNP * pSNP = new ParsedSNP();
 
-	/* Track validity of given SNP */
-	int invalidSNP = VALID_SNP;
+	pSNP->chromosomeLoc = *(secondMatches.begin() + INDEX_CHROMOSOME);
+	pSNP->pos = *(secondMatches.begin() + INDEX_POS);
 
-	/* Split data into pieces iteratively - by the VCF standard, data is tab-delimited */
-	char * colData = strtok_r(cstrdata, "\t", &cstrdata);
-	while (colData != NULL) {
-		
-		/* Interpret the column data based on column number */
-		
-		/* Chromosome */
-		if (colNum == COL_CHROM) {
-			pSNP->chromosomeLoc = string(colData, strlen(colData));
-		}
+	string genotypeStr = *(secondMatches.begin() + INDEX_GENOTYPES);
 
-		/* Position */
-		else if (colNum == COL_POS) {
-			pSNP->pos = string(colData, strlen(colData));
-		}
-
-		/* ID */
-		else if (colNum == COL_ID) {}
-
-		/* Reference */
-		else if (colNum == COL_REF) {
-			/* Early exit if INDEL or mulitiallelic */
-			if (strlen(colData) > 1 || strcmp(colData, ".") == 0) {
-				invalidSNP = INDEL_REF;
-				break;
-			}
-		}
-
-		/* Alternate */
-		else if (colNum == COL_ALT) {
-			/* Early exit if INDEL or mulitiallelic */
-			if (strlen(colData) > 1 || strcmp(colData, ".") == 0) {
-				invalidSNP = INDEL_ALT;
-				break;
-			}
-		}
-
-		/* Quality, or confidence value */
-		else if (colNum == COL_QUAL) {
-			/* Early exit if less than than desired */
-			int qual = atoi(colData);
-			if (atoi(colData) < confScore) {
-				invalidSNP = LOW_CONF_SCORE;
-				break;
-			}
-		}
-
-		/* Filter */
-		else if (colNum == COL_FILTER) {}
-
-		/* Info */
-		else if (colNum == COL_INFO) {}
-
-		/* Format */
-		else if (colNum == COL_FORMAT) {}
-
-		/* Samples */
-		else if (colNum >= COL_SAMPLE) {
-			/* First colon separated subfield is the genotype.
-			NOTE: A genotype string from strtok is expected */
-
-			char * genotypeData = strtok_r(colData, ":", &colData);
-
-			if (genotypeData != NULL) {
-				int * genotypeCount = Converter::countGenotype(genotypeData);
-
-				/* Error with genotypeData occurred */
-				if (genotypeCount == NULL) {
-					invalidSNP = INVALID_GENOTYPE;
-					break;
-				}
-
-				/* 
-					Parse genotype combinations appropriately.
-					Encoding rule:
-						- 0|0: becomes '0'
-						- 1|0: becomes '1'
-						- 0|1 or 1|0: becomes '2'
-				*/
-				if ((genotypeCount[0] == 2 && genotypeCount[1] == 0)
-					|| (genotypeCount[0] == 0 && genotypeCount[1] == 2)) {
-
-					pSNP->parsed = pSNP->parsed + "0" + delimiter;
-					alleleFrequencies[0]++;
-
-				} else if (genotypeCount[0] == 1 && genotypeCount[1] == 1) {
-					pSNP->parsed = pSNP->parsed + "1" + delimiter;
-					alleleFrequencies[1]++;
-				} 
-
-				/* Another case not considered */
-				else {
-					invalidSNP = UNKNOWN_ERROR;
-					break;
-				}
-
-				/* At this point, sample was parsed: increment numSamples */
-				numSamples++;
-			}
-			
-			/* Should not be null - early exit (invalid vcf SNP) */
-			else {
-				invalidSNP = NO_GENOTYPE_FOUND;
-				break;
-			}
-		}
-
-		colData = strtok_r(cstrdata, "\t", &cstrdata);
-		colNum++;
-	}
-
-	/* Invalid SNP when no samples were evaluated */
-	if (numSamples == 0) {
-		invalidSNP = NO_SAMPLES_EVAL;
-	}
-
-	/* Case when an invalid SNP is detected - clean up, and return NULL */
-	if (invalidSNP) {
-		cout << "SNP was not valid. Error code: " << invalidSNP << endl;
-		delete [] cstrdata;
+	/* Invalid SNP due to too high alternative allele freq */
+	int result = translateGenotypes(&genotypeStr, pSNP, alleleFreq);
+	if (result == HIGH_ALT_ALLELE_FREQ) {
 		delete pSNP;
 		return NULL;
-	} 
-
-	/* FURTHER CHECKS FOR SNP INVALIDITY */
-
-	/* Invalid SNP when allele frequency criteria not met */
-	if (Converter::calcAlleleFreq(alleleFrequencies) < (double)alleleFreq) {
-		invalidSNP = LOW_ALLELE_FREQ;
 	}
 
-	/* Clean up */
-	delete [] cstrdata;
-	delete [] alleleFrequencies;
-
-	/* Case when an invalid SNP is detected - clean up, and return NULL */
-	if (invalidSNP) {
-		cout << "SNP was not valid. Error code: " << invalidSNP << endl;
-		delete [] cstrdata;
-		delete pSNP;
-		return NULL;
-	} 
-	
-	/* SNP has been successfully parsed */
-	else {
-		delete [] cstrdata;
-		// cout << "Showing details..." << endl;
-		// pSNP->showDetails();
-		return pSNP;
-	}
+	return pSNP;
 }
+
+/* Translate the genotype string.
+	Assume string has length > 0, and SNP is valid. */
+int Converter::translateGenotypes(string * genotypeStr, ParsedSNP * pSNP, int alleleFreq) {
+
+	/* Maintain a count of number of samples with alternative alleles */
+	int genotypeCount[3] = {0,0,0};
+
+	/* Split the genotypes (tab-delimitered) */
+	string splitDelim = "\t";
+	int splitDelimLength = splitDelim.length();
+	int delimIndex = genotypeStr->find(splitDelim);
+	string genotype;
+	while (delimIndex != string::npos) {
+		/* Edge case: end of the line */
+		genotype = genotypeStr->substr(0, delimIndex);
+
+		if (genotype[0] == genotype[2]) {
+			if (genotype[0] == '0') {
+				pSNP->parsed += "0" + this->delimiter;
+				genotypeCount[0]++;
+			} else {
+				pSNP->parsed += "1" + this->delimiter;
+				genotypeCount[1]++;
+			}
+		} else {
+			pSNP->parsed += "2" + this->delimiter;
+			genotypeCount[2]++;
+		}
+
+		/* Erase the extracted / converted genotype from the original string */
+		genotypeStr->erase(0, delimIndex + splitDelimLength);
+		delimIndex = genotypeStr->find(splitDelim);
+
+	}
+
+	/* Last genotype */
+	if ((*genotypeStr)[0] == (*genotypeStr)[2]) {
+		if ((*genotypeStr)[0] == '0') {
+			pSNP->parsed += "0" + this->delimiter;
+			genotypeCount[0]++;
+		} else {
+			pSNP->parsed += "1" + this->delimiter;
+			genotypeCount[1]++;
+		}
+	} else {
+		pSNP->parsed += "2" + this->delimiter;
+		genotypeCount[2]++;
+	}
+
+	/* Calculate allele frequency */
+	double numAltAlleleSamples = genotypeCount[1] + genotypeCount[2];
+	double totalSamples = genotypeCount[0] + numAltAlleleSamples;
+	double freq = (numAltAlleleSamples / totalSamples) * 100;
+
+	if (freq > alleleFreq) {
+		cout << "High alt allele freq!" << endl;
+		return HIGH_ALT_ALLELE_FREQ;
+	}
+
+	return 0;
+}
+
 
 /** 
  * Count genotype (ie 0's and 1's). Will be a 2-index single dim array.

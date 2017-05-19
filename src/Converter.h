@@ -35,14 +35,14 @@ using namespace std;
 #define INDEL_ALT 2
 #define LOW_CONF_SCORE 3
 #define INVALID_GENOTYPE 4
-#define LOW_ALLELE_FREQ 5
+#define HIGH_ALT_ALLELE_FREQ 5
 #define NO_SAMPLES_EVAL 6
 #define NO_GENOTYPE_FOUND 7
 
 #define UNKNOWN_ERROR 50
 
 /* Delimiter used to separate the encoded matrix values */
-#define delimiter " "
+//#define delimiter ' '
 
 /* Class definition */
 class Converter {
@@ -63,6 +63,11 @@ class Converter {
 		/* Calculate allele frequency */
 		double calcAlleleFreq(int * alleleFrequencies);
 
+		/* Process a genotype string */
+		int translateGenotypes(string * genotypeStr, ParsedSNP * pSNP, int alleleFreq);
+		
+		/* Delimiter string */
+		string delimiter = string(" ");
 };
 
 #endif

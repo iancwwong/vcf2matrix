@@ -24,13 +24,13 @@ class SNPReader {
         ~SNPReader();
 
         /* Obtain toParse vector */
-        vector<string> * getToParse();
+        vector<string *> * getToParse();
 
         /* Read a given file for SNPs */
         void readToParse(string inputFileName);
 
     private:
-       vector<string> * toParse;
+       vector<string *> * toParse;
 };
 
 #endif

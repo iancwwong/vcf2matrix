@@ -28,7 +28,7 @@ vector<string> * SNPParser::getSubFileNames() {
 
 
 /* Parse the given SNPs */
-void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScore) {
+void SNPParser::parseSNPs(vector<string *> * toParse, int alleleFreq, int confScore) {
 
 	/* Reduce number of threads in case numthreads > numlines to parse */
 	if (this->numThreads > toParse->size()) {
@@ -84,7 +84,7 @@ void SNPParser::parseSNPs(vector<string> * toParse, int alleleFreq, int confScor
 }
 
 /* Thread that does the parsing */
-void SNPParser::parseThread(string subfilename, vector<string> * toParse, 
+void SNPParser::parseThread(string subfilename, vector<string *> * toParse, 
 						int alleleFreq, int confScore,
 						int lowLimit, int upLimit) {
 
@@ -98,7 +98,8 @@ void SNPParser::parseThread(string subfilename, vector<string> * toParse,
 	/* Loop through index limits, parse accordingly */
 	//#pragma omp parallel for
 	for (int i = lowLimit; i <= upLimit; i++) {
-		ParsedSNP * pSNP = c.convert((*toParse)[i], alleleFreq, confScore);
+		
+		ParsedSNP * pSNP = c.convert(*(*toParse)[i], alleleFreq, confScore);
 
 		/* Cases when the SNP is successfully parsed: write */
 		if (pSNP != NULL) {

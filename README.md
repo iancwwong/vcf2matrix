@@ -11,10 +11,15 @@ Attempts to convert a VCF file into a matrix quickly.
 	- Set higher priority to process
 	- Compilation with profiling (needs representative dataset)
 	
+	- Compiling using MinGW-64
+	- Conversion: Use Regex, rather than strtok_r and considering each column
+	- 
+	
 * Todo:
 	- Parser should generate the subfiles in another directory (eg "temp")
 	- Decrease memory usage (program reads entire vcf into memory at this stage). Maybe read the vcf partially?
 	- Allele frequency needs to be calculated based on percentage of samples that possess the alternative allele
+	- Use a test vcf that has indels
 	
 * Tested optimisation methods:
 	- :thumbsup: Enable optimisations through g++ (-O4)
