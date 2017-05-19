@@ -4,6 +4,7 @@
     "version": "0.1.0",
     "command": "g++",
     "isShellCommand": true,
+    "isBuildCommand": true,
     "args": ["-std=c++11", "-O4", "-pthread",
                 "src/*.cpp", "-fopenmp",
                 "-o", "vcf2matrix"],
