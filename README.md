@@ -9,7 +9,6 @@ Attempts to convert a VCF file into a matrix quickly.
 	- Check that there are no redundant mallocs of strings
 	- Read: using something other than ifstream, eg mmap
 	- Set higher priority to process
-	- Compilation with profiling (needs representative dataset)
 	
 * Todo:
 	- Parser should generate the subfiles in another directory (eg "temp")
@@ -18,8 +17,7 @@ Attempts to convert a VCF file into a matrix quickly.
 	
 * Tested optimisation methods:
 	- :thumbsup: Enable optimisations through g++ (-O4)
-	- :thumbsup: Compile using OpenMP and pragmas (basic)
-	- :thumbsdown: Compile using OpenMP and pragmas (optimised)
+	- :thumbsup: Compile using OpenMP and pragmas
 	
 ## Issues
 * Program crashes at around 1M samples (even if there's only ONE SNP)
