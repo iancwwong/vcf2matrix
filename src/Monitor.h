@@ -30,7 +30,6 @@
 #include <thread>
 
 #include "Writer.h"
-#include "ConversionThread.h"
 #include "ParsedSNP.h"
 
 using namespace std;
@@ -51,30 +50,37 @@ class Monitor {
 		/* Add data to the toParse */
 		void addToParseData(string data);
 
-        /* Thread that runs the parsing */
-        void executeParse();
-
 		/* Indicates previous procedure is completed. Used to terminate this class'
 		executeParse() thread. */
 		void signalPrevProcComplete();
+
+        /* Thread that starts and manages parsing */
+        void executeParse();
 		
 		/* Public fields */
-		vector<string> toParse;							/* The list of data to parse */
-		mutex toParse_lock;	
-		int * busyThreadsCount;							/* Number of threads that are busy. */
-		mutex busyThreadsCount_lock;	
+		vector<string> * toParse;							/* The list of data to parse */
+		mutex * toParse_lock;	
 
     private:
 		Writer * writer;								/* Reference to Writer. Needs to access (and the corr lock):
 																- toWrite vector */
  
 		int numThreads;									/* Number of threads to manage */
-		vector<thread *> conversionThreads;				/* The list of executing conversion threads that parse/process information */
+
+		/* 
+		 * Thread that does the parsing.
+		 * Each thread is given a specific name for its corresponding subfiles,
+		 * generated from its ID
+		 */
+		void parseThread(vector<string> * toParse, mutex * toParseLock,			// Thread is consumer for toParse vector
+						Writer * writer,										// Thread is producer for toWrite vector (located inside writer)
+						bool * prevProcComplete,								// Thread knows when to terminate
+						int alleleFreq, int confScore);
 
 		bool prevProcComplete;							/* Tracks whether previous process is completed */
 
-		int alleleFreq;									/* Parsing purposes: These are arbitrary parsing parameters */
-		int confScore;
+		int af;		/* Allele Frequency (parsing purposes) */
+		int cs;		/* Confidence Score (parsing purposes) */
 		
 };
 

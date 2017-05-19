@@ -34,7 +34,7 @@ class Writer {
         void setOutputFilenames(string filename);
 
         /* Write the parsed SNPs */
-        void executeParse();
+        void executeParse();                /* Consumer thread for toWrite vector */
 
         /* Public fields */
         vector<ParsedSNP> toWrite;          /* Reference to list of parsed SNPs to write */
@@ -49,7 +49,6 @@ class Writer {
 
         ofstream outputMatrixFile;          /* Reference to output matrix file */
         ofstream outputLocFile;             /* Reference to output locations file */
-        ofstream outputSamplesNamesFile;    /* Reference to sample names */
 
         bool prevProcComplete;				/* Tracks whether previous process is completed */
 };

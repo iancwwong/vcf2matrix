@@ -41,13 +41,13 @@ class Reader {
         int getNumLines();
   
         /* Parses the SNPs in the vcf file */
-        void executeParse();
+        void executeParse();            /* Producer thread for the 'toParse' vector (located within monitor) */
 
     private:
-        Monitor * monitor;      /* Reference to monitor that controls parsing threads */
-        string inputFilename;   /* Reference to input VCF file name */
-        int numLines;         /* Number of threads that should be run, 
-                                based on the properties of the input VCF file */
+        Monitor * monitor;              /* Reference to monitor that controls parsing threads */
+        string inputFilename;           /* Reference to input VCF file name */
+        int numLines;                   /* FUTURE: Number of threads that should be run, 
+                                           based on the properties of the input VCF file */
 };
 
 #endif

@@ -43,13 +43,27 @@ void Reader::executeParse() {
 	   to read in a certain number of bytes */
 	while ( getline(inputVCFFile,line) ) {
 
-		/* Ignore all lines that start with '##' - most likely header info */
-		if (line.compare(0,2,"##") == 0) {
-			continue;
+		// /* Ignore all lines that start with '##' - most likely header info */
+		// if (line.compare(0,2,"##") == 0) {
+		// 	continue;
+		// }
+
+		// /* Ignore all lines that start with '#' - most likely vcf content info */
+		// else if (line.compare(0,1,"#") == 0) {
+		// 	/* Note: Information from this string is important, and should be considered in the future */
+		// 	continue;
+		// }
+
+		// /* SNP info encountered - pass to monitor for parsing */
+		// else {
+		// 	this->monitor->addToParseData(line);
+		// }
+
+		/* Optimised reading by only checking lines that do NOT start with '#' */
+		if (line.compare(0,1,"#") != 0) {
+			this->monitor->addToParseData(line);
 		}
 
-		/* Pass the line as data to Monitor for processing */
-		this->monitor->addToParseData(line);
 	}
 
 	inputVCFFile.close();
