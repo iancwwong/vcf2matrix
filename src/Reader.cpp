@@ -29,7 +29,7 @@ int Reader::getNumLines() {
 }
 
 /* Thread that reads the VCF file for parsing SNPs */
-void Reader::executeParse() {
+void Reader::executeRead() {
 	string line;
 	ifstream inputVCFFile(this->inputFilename);
 

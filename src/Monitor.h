@@ -27,6 +27,7 @@
 
 #include <queue>
 #include <mutex>
+#include <condition_variable>
 #include <thread>
 
 #include "Writer.h"
@@ -59,7 +60,7 @@ class Monitor {
 		
 		/* Public fields */
 		queue<string> * toParse;							/* The list of data to parse */
-		mutex * toParse_lock;	
+		mutex * toParse_lock;
 
     private:
 		Writer * writer;								/* Reference to Writer. Needs to access (and the corr lock):
@@ -73,9 +74,13 @@ class Monitor {
 		 * generated from its ID
 		 */
 		void parseThread(queue<string> * toParse, mutex * toParseLock,			// Thread is consumer for toParse vector
+						condition_variable * toParse_empty_cv, bool * empty_toParse,
 						Writer * writer,										// Thread is producer for toWrite vector (located inside writer)
 						bool * prevProcComplete,								// Thread knows when to terminate
 						int alleleFreq, int confScore);
+
+		condition_variable * toParse_empty_cv;				/* Used to wait for an empty toParse list */
+		bool empty_toParse;	
 
 		bool prevProcComplete;							/* Tracks whether previous process is completed */
 

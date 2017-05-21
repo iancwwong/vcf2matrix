@@ -137,7 +137,7 @@ ParsedSNP * Converter::convert(string data, int alleleFreq, int confScore) {
 
 	/* Case when an invalid SNP is detected - clean up, and return NULL */
 	if (invalidSNP) {
-		cout << "SNP was not valid. Error code: " << invalidSNP << endl;
+		//cout << "SNP was not valid. Error code: " << invalidSNP << endl;
 		delete pSNP;
 		return NULL;
 	} 

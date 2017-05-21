@@ -17,6 +17,7 @@
 #include <string>
 #include <queue>
 #include <mutex>
+#include <condition_variable>
 
 #include "ParsedSNP.h"
 
@@ -33,23 +34,30 @@ class Writer {
         /* Preparation */
         void setOutputFilenames(string filename);
 
-        /* Write the parsed SNPs */
-        void executeParse();                /* Consumer thread for toWrite vector */
+        /* Add data to write */
+        void addToWriteData(ParsedSNP * pSNP);
 
-        /* Public fields */
-        queue<ParsedSNP> * toWrite;          /* Reference to list of parsed SNPs to write */
-        mutex toWrite_lock;                 /* Lock to toWrite vector. Used by other classes
-                                                That attempt to modify toWrite. */
-
+        
         /* Indicates previous procedure is completed. Used to terminate this class'
 		executeParse() thread. */
 		void signalPrevProcComplete();
 
+        /* Write the parsed SNPs */
+        void executeWrite();                /* Consumer thread for toWrite vector */
+
+        /* Public fields */
+        queue<ParsedSNP *> * toWrite;           /* Reference to list of parsed SNPs to write */
+        mutex * toWrite_lock;                   /* Lock the toWrite queue, and empty_toWrite flag. Used by other classes
+                                                That attempt to modify toWrite. */
+
     private:
+        
+        ofstream * outputLocFile;             /* Reference to output locations file */
+        ofstream * outputMatrixFile;          /* Reference to output matrix file */
 
-        ofstream outputMatrixFile;          /* Reference to output matrix file */
-        ofstream outputLocFile;             /* Reference to output locations file */
-
+        condition_variable * toWrite_empty_cv;  /* Used to wait for an empty toWrite list */
+        bool empty_toWrite;
+        
         bool prevProcComplete;				/* Tracks whether previous process is completed */
 };
 

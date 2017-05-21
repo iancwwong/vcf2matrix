@@ -53,7 +53,7 @@ class Converter {
 		Converter();
 		~Converter();
 
-		/* Method to parse a line of data */
+		/* Method to parse a line of data. Returns NULL if SNP was invalid. */
 		ParsedSNP * convert(string data, int alleleFreq, int confScore);
 	
 	private:

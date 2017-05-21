@@ -15,15 +15,15 @@ using namespace std;
 int main(int argc, char * argv[]) {
 
     /* Check proper usage - VCF file, allele freq, confidence score */
-    if (argc < 3) {
+    if (argc < 4) {
         cout << "Usage: vcf2matrix <vcf file> <allele freq> <confidence score>" << endl;
         return 0;
     }
 
     /* Validate and parse arguments */
-    string filename = string(argv[0]);
-    int alleleFreq = stoi(argv[1], nullptr);
-    int confScore = stoi(argv[2], nullptr);
+    string filename = string(argv[1]);
+    int alleleFreq = stoi(argv[2], nullptr);
+    int confScore = stoi(argv[3], nullptr);
 
     cout << "Input VCF file: " << filename << endl;
     cout << "Allele freq: " << alleleFreq << endl;
@@ -39,7 +39,7 @@ int main(int argc, char * argv[]) {
     reader.setMonitor(&monitor);
 
     /* Prepare monitor for parsing */
-    int numThreads = 1;
+    int numThreads = 8;
     monitor.setNumThreads(numThreads);
     monitor.setWriter(&writer);
     monitor.setParseParameters(alleleFreq, confScore);
@@ -49,22 +49,27 @@ int main(int argc, char * argv[]) {
     writer.setOutputFilenames(outputFilename);
 
     /* Parse VCF appropriately */
-    thread readerThread(&Reader::executeParse, &reader);
+    cout << "Starting up threads...." << endl;
+    thread writerThread(&Writer::executeWrite, &writer);
     thread monitorThread(&Monitor::executeParse, &monitor);
-    thread writerThread(&Writer::executeParse, &writer);
+    thread readerThread(&Reader::executeRead, &reader);
 
     /* Block main thread until reader thread finishes */
+    cout << "Waiting for reader to complete..." << endl;
     readerThread.join();
 
     /* Signal monitor that the reader process has finished 
         Then block until monitor thread finishes */
+    cout << "Waiting for parsing to complete..." << endl;
     monitor.signalPrevProcComplete();
     monitorThread.join();
 
     /* Signal writer that the monitor process has finished.
         Then block until writer process finishes */
+    cout << "Waiting for writing to complete..." << endl;
     writer.signalPrevProcComplete();
     writerThread.join();
 
+    cout << "VCF parsing complete!" << endl;
     return 0;
 }
