@@ -93,8 +93,8 @@ void Writer::executeWrite() {
 
 		/* Write the obtained ParsedSNP */
 		if (toWritePSNP != nullptr) {
-			*this->outputLocFile << toWritePSNP->chromosomeLoc << "," << toWritePSNP->pos << endl;
-			*this->outputMatrixFile << toWritePSNP->parsed << endl;
+			*this->outputLocFile << toWritePSNP->chromosomeLoc << "," << toWritePSNP->pos << "\n";
+			*this->outputMatrixFile << toWritePSNP->parsed << "\n";
 		}
 
 		// PrintDebugStatement("Writer::executeWrite", "Still writing...");
