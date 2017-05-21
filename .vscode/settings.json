@@ -4,6 +4,8 @@
 		"iosfwd": "cpp",
 		"mutex": "cpp",
 		"iostream": "cpp",
-		"fstream": "cpp"
+		"fstream": "cpp",
+		"array": "cpp",
+		"string_view": "cpp"
 	}
 }
