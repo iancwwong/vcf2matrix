@@ -5,7 +5,7 @@
 
 /* Constructor, destructor */
 Monitor::Monitor() {
-	this->toParse = new vector<string>();
+	this->toParse = new queue<string>();
 	this->toParse_lock = new mutex();
 	this->writer = nullptr;				/* default */
 	this->numThreads = 1;				/* default */
@@ -37,7 +37,7 @@ void Monitor::setNumThreads(int numThreads) {
 void Monitor::addToParseData(string data) {
 	/* Utilise locks to prevent concurrency issues */
 	this->toParse_lock->lock();
-	this->toParse->push_back(data);
+	this->toParse->push(data);
 	this->toParse_lock->unlock();
 }
 
@@ -70,7 +70,7 @@ void Monitor::executeParse() {
 }
 
 /* Thread that does the parsing */
-void Monitor::parseThread(vector<string> * toParse, mutex * toParseLock,
+void Monitor::parseThread(queue<string> * toParse, mutex * toParseLock,
 				Writer * writer,
 				bool * prevProcComplete,
 				int alleleFreq, int confScore) {

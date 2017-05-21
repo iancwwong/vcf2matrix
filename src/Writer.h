@@ -15,7 +15,7 @@
 
 #include <fstream>
 #include <string>
-#include <vector>
+#include <queue>
 #include <mutex>
 
 #include "ParsedSNP.h"
@@ -37,7 +37,7 @@ class Writer {
         void executeParse();                /* Consumer thread for toWrite vector */
 
         /* Public fields */
-        vector<ParsedSNP> toWrite;          /* Reference to list of parsed SNPs to write */
+        queue<ParsedSNP> * toWrite;          /* Reference to list of parsed SNPs to write */
         mutex toWrite_lock;                 /* Lock to toWrite vector. Used by other classes
                                                 That attempt to modify toWrite. */
 

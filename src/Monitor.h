@@ -25,7 +25,7 @@
 #ifndef MONITOR_H
 #define MONITOR_H
 
-#include <vector>
+#include <queue>
 #include <mutex>
 #include <thread>
 
@@ -58,7 +58,7 @@ class Monitor {
         void executeParse();
 		
 		/* Public fields */
-		vector<string> * toParse;							/* The list of data to parse */
+		queue<string> * toParse;							/* The list of data to parse */
 		mutex * toParse_lock;	
 
     private:
@@ -72,7 +72,7 @@ class Monitor {
 		 * Each thread is given a specific name for its corresponding subfiles,
 		 * generated from its ID
 		 */
-		void parseThread(vector<string> * toParse, mutex * toParseLock,			// Thread is consumer for toParse vector
+		void parseThread(queue<string> * toParse, mutex * toParseLock,			// Thread is consumer for toParse vector
 						Writer * writer,										// Thread is producer for toWrite vector (located inside writer)
 						bool * prevProcComplete,								// Thread knows when to terminate
 						int alleleFreq, int confScore);
