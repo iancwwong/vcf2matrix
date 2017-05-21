@@ -10,6 +10,8 @@ Attempts to convert a VCF file into a matrix quickly.
 
 ## ToDo
 * Make NULL to nullptr (in appropriate cases)
+* Use condition variables to follow producer-consumer problem (currently, waiting on locks will NOT block thread)
+
 * Make number of threads created DYNAMIC
 * To maximise efficiency for large writes, Writer should write whenever ~4K Bytes are ready be written.
 
