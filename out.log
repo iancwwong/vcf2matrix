@@ -1,0 +1,11 @@
+
+VCFtools - 0.1.15
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--vcf vcf_files/100000-1000.vcf
+	--012
+	--remove-indels
+
+After filtering, kept 0 out of 0 Individuals
+Error: Require Genotypes in VCF file in order to output as 0/1/2 matrix.
