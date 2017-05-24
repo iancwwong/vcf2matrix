@@ -14,6 +14,21 @@ numSNPs = int(sys.argv[2])
 GT_options = ['0|0', '0|1', '1|0', '1|1']
 numGT_options = len(GT_options)
 
+# Write out the vcf header
+print "##fileformat=VCFv4.2"
+print "##fileDate=20090805"
+print '##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">'
+
+# Build and write the content header
+header_cols = ['#CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER', 'INFO', 'FORMAT']
+row_str = "";
+for data in header_cols:
+	row_str += data + "\t"
+for i in range(0, numSamples):
+	sample_name = 'SAMPLE' + str(i+1)
+	row_str += sample_name + "\t"
+print row_str.strip()
+
 # For now, have other fields to be set values
 chrom = "1"
 pos = "990417"
