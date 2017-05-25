@@ -58,7 +58,12 @@ class Converter {
 	
 	private:
 
-		/* String version of the delimiter */
+		/* Count genotype (ie 0's and 1's) */
+		int * countGenotype(char * genotypeStr);
+ 
+		/* Calculate allele frequency */
+		double calcAlleleFreq(int * alleleFrequencies);
+
 		string delimiter = string(DELIM_CHAR);
 
 };
