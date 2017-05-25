@@ -3,7 +3,7 @@
 */
 #include "Monitor.h"
 
-#include "Converter.h" 		/* Conversion of a single SNP into a ParsedSNP */
+#include "CStringConverter.h" 		/* Conversion of a single SNP into a ParsedSNP */
 #include "Debug.h"
 
 /* Constructor, destructor */
@@ -78,6 +78,7 @@ void Monitor::executeParse() {
 	}
 
 	/* Clean up */
+	cout << "Cleaning up threads..." << endl;
 	delete [] threads;
 
 }
@@ -120,4 +121,5 @@ void Monitor::parseThread(queue<string> * toParse, mutex * toParseLock,
 
 		// PrintDebugStatement("Monitor::ParseThread", "Stil converting...");
 	}
+
 }

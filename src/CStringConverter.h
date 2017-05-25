@@ -53,12 +53,17 @@ class Converter {
 		Converter();
 		~Converter();
 
-		/* Method to parse a line of data. Returns NULL if SNP was invalid. */
+		/* Method to parse a line of data */
 		ParsedSNP * convert(string data, int alleleFreq, int confScore);
 	
 	private:
 
-		/* String version of the delimiter */
+		/* Count genotype (ie 0's and 1's) */
+		int * countGenotype(char * genotypeStr);
+ 
+		/* Calculate allele frequency */
+		double calcAlleleFreq(int * alleleFrequencies);
+
 		string delimiter = string(DELIM_CHAR);
 
 };
