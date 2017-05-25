@@ -1,0 +1,55 @@
+= 100000 SNPs, 1000 Samples:
+* Basic: 63s
+* Basic using -O4, Pragma: 35s
+* Optimised (4 threads) using -O4: 40s
+* Optimised (8 threads) using -O4: 35s
+* Optimised (8 threads) using -O4, Pragma: 36s
+* Optimised (12 threads) using -O4: 38s
+* Optimised (16 threads) using -O4: 40s
+* Regex (8 threads) using -O4: 2min 12s
+* String-only converter (8 threads, -O4): 15s	/* removed if statements, no char * copying */
+* 64-bit compilation: 13s
+* Redesign (String only converter, 8 threads, -O4, 64-bit compilation): 8s
+
+= 1M SNPs, 1000 samples
+* Redesign (String only converter, 8 threads, -O4, 64-bit compilation): 2min 20 seconds
+
+-----------------------------------------------------------------
+
+== Testing Results: Linux
+
+= 100,000 SNPs, 1000 Samples
+Benchmark) VCF Tools = 21.096 s
+
+* Algo A
+1) Algo A (char * converter, no threads) = 
+2) Algo A (char * converter, 8 threads) = 
+3) Algo A (char * converter, 12 threads) = 
+4) Algo A (char * converter, 16 threads) = 
+
+5) Algo A (Regex converter, no threads) = 
+6) Algo A (Regex converter, 8 threads) = 
+7) Algo A (Regex converter, 12 threads) = 
+8) Algo A (Regex converter, 16 threads) = 
+
+9) Algo A (Std String converter, no threads) = 
+10) Algo A (Std String converter, 8 threads) = 
+11) Algo A (Std String converter, 12 threads) = 
+12) Algo A (Std String converter, 16 threads) = 
+
+* Algo B
+1) Algo B (char * converter, 1 thread) = 
+2) Algo B (char * converter, 8 threads) = 
+3) Algo B (char * converter, 12 threads) = 
+4) Algo B (char * converter, 16 threads) = 
+
+5) Algo B (Regex converter, 1 thread) = 
+6) Algo B (Regex converter, 8 threads) = 
+7) Algo B (Regex converter, 12 threads) = 
+8) Algo B (Regex converter, 16 threads) = 
+
+9) Algo B (Std string converter, 1 thread) = 
+10) Algo B (Std String converter, 8 threads) = 
+11) Algo B (Std String converter, 12 threads) = 
+12) Algo B (Std String converter, 16 threads) = 
+
