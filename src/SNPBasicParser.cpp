@@ -1,7 +1,8 @@
 /* Implementation of SNPBasicParser.h */
 
 #include "SNPBasicParser.h"
-#include "Converter.h"
+#include "CStringConverter.h"
+#include <iostream>
 
 /* Constructor, destructor */
 SNPBasicParser::SNPBasicParser() {
@@ -26,21 +27,25 @@ void SNPBasicParser::parseSNPs(vector<string> * toParse, int alleleFreq, int con
 	this->subfilenames->push_back(subfilename);
 	writer.createSubFiles(subfilename);
 
+	cout << "Problem not yet reached..." << endl;
+
 	/* Converter initialisation */
 	Converter c;
 
 	/* Loop through index limits, parse accordingly */
-	#pragma omp parallel for
-	for (int i = 0; i <= toParse->size(); i++) {
+	//#pragma omp parallel for
+	for (int i = 0; i < toParse->size(); i++) {
 		ParsedSNP * pSNP = c.convert((*toParse)[i], alleleFreq, confScore);
 
 		/* Cases when the SNP is successfully parsed: write */
 		if (pSNP != NULL) {
-			#pragma omp critical(writeSNP)
+			//#pragma omp critical(writeSNP)
 			writer.writeParsedSNP(pSNP);
 		}
 	}
+	cout << "All written!" << endl;
 
 	/* Close the subfiles */
 	writer.closeSubFiles();
+	cout << "Closed file " << endl;
 }

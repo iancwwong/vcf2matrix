@@ -5,7 +5,7 @@
 #include <iostream>		/* for printing debug statements */
 
 #include "SNPParser.h"
-#include "Converter.h"
+#include "CStringConverter.h"
 
 /* Constructor, destructor */
 SNPParser::SNPParser() {

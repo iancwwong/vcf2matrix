@@ -54,7 +54,7 @@ void SNPReader::readToParse(string inputFileName) {
 		}
 
 		/* Pass the line as data to Monitor for processing */
-		//cout << "Line read: " << line << endl;
+		// cout << "Line read: " << line << endl;
 		this->toParse->push_back(line);
 	}
 
