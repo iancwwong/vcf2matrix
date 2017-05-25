@@ -27,8 +27,6 @@ void SNPBasicParser::parseSNPs(vector<string> * toParse, int alleleFreq, int con
 	this->subfilenames->push_back(subfilename);
 	writer.createSubFiles(subfilename);
 
-	cout << "Problem not yet reached..." << endl;
-
 	/* Converter initialisation */
 	Converter c;
 
@@ -43,9 +41,7 @@ void SNPBasicParser::parseSNPs(vector<string> * toParse, int alleleFreq, int con
 			writer.writeParsedSNP(pSNP);
 		}
 	}
-	cout << "All written!" << endl;
 
 	/* Close the subfiles */
 	writer.closeSubFiles();
-	cout << "Closed file " << endl;
 }
