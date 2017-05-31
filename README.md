@@ -2,6 +2,11 @@
 
 Attempts to convert a VCF file into a matrix quickly.
 
+Change to project root directory. Compile using the command:
+```
+g++ -std=c++11 -O4 -pthread src/*.cpp -o vcf2matrix
+```
+
 ## Notes
 * The purpose is to maximise efficiency. This tool attempts to achieve this in the following ways:
 	- Sequential read of VCF file ONCE (eg when parsing VCF file)
