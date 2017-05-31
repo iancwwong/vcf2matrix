@@ -3,7 +3,7 @@
 */
 #include "Monitor.h"
 
-#include "CStringConverter.h" 		/* Conversion of a single SNP into a ParsedSNP */
+#include "Converter.h" 		/* Conversion of a single SNP into a ParsedSNP */
 #include "Debug.h"
 
 /* Constructor, destructor */
